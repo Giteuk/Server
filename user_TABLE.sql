@@ -44,7 +44,7 @@ INSERT INTO `operator_TABLE` VALUES ('user');
 --
 
 CREATE TABLE `farm_TABLE` (
-  `id` varchar(10) NOT NULL,
+  `id` varchar(10) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
 );
 
@@ -62,7 +62,7 @@ INSERT INTO `farm_TABLE` VALUES ('0');
 --
  
 CREATE TABLE `KEY_TABLE` (
-  `id` varchar(10) NOT NULL,
+  `id` varchar(10) NOT NULL AUTO_INCREMENT,
   `value` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
 );
