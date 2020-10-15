@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "hys014081hys",
+    "database": "Capstone",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "hys014081hys",
+    "database": "Capstone",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "hys014081hys",
+    "database": "Capstone",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
