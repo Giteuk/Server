@@ -91,18 +91,31 @@ router.post('/login', function(req, res, next){
       //id를 입력 받았을 때
       if(result.length == 0){ 
           //일치하는 아이디 없음, 로그인 실패
-          res.send("로그인 실패, 아이디 혹은 패스워드를 확인하세요.");
+          res.send("실패");
       }else{
           //로그인 성공
-          req.session.logined = true;
-          req.session.user_id = req.body.id;
+          //req.session.logined = true;
+          //req.session.user_id = req.body.id;
           console.log("로그인");
-          res.send(`${req.body.id}님 안녕하세요. 로그인 되셨습니다.`);
+          res.send("성공");
+          //res.send(`${req.body.id}님 안녕하세요. 로그인 되셨습니다.`);
           // res.render('logout', {id: req.session.user_id});
       }
   }).catch(err=>{
       res.send("ERROR1");
       next(err);
+  })
+})
+
+router.get('/main/:id', function(req, res, next){
+  UserTable.findAll({
+    where : {userID : req.params.id}
+  }).then( result => {
+    //console.log(UserName);
+    var name = result.UserName;
+    //console.log("hey"+name);
+    res.send(result[0].UserName);
+    //res.send(result.UserID);
   })
 })
 
