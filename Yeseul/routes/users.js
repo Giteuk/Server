@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {UserTable} = require('../models');
+const {UserTable, KeyTable, UserToFarmTable} = require('../models');
 
 var session = require('express-session');
 const FileStore = require('session-file-store')(session); 
@@ -26,28 +26,71 @@ router.get('/', function(req, res, next) {
 });
 
 //회원가입
+//회원가입 시도를 할 때 key값을 받아옴 -> key 값과 일치하는 밭 번호를 알아냄 -> UserToFarm테이블에 추가
+//회원 가입 시도를 할 때 ID 가 원래 있던 아이디와 동일한지 볼 필요는 없다.
 router.post('/', function(req, res, next){
-  let ID = req.body.id;
-  UserTable.findAll({
-    where : { UserID : ID }
-  }).then( result => {
-    if(result.length == 0){
+  console.log("HA:SDF");
+  KeyTable.findAll({
+    where: { KeyValue : req.body.key}
+  }).then(result => {
+    console.log(result.length);
+    // res.send(result);
+    if(result.length == 0)
+      res.send("Key 값이 맞지 않습니다.");
+    else {
+      //존재하는 key
       UserTable.create({
         UserName : req.body.name, 
-        UserID: ID,
-        UserPW: req.body.pw,
-        UserPNum: req.body.phone,
-        UserEmail: req.body.email
+            UserID: req.body.id,
+            UserPW: req.body.pw,
+            UserPNum: req.body.phone,
+            UserEmail: req.body.email
       }).then(
-        res.send("회원가입 되었습니다.")
+        // res.send("회원가입 되었습니다.")
+        console.log("가입 완료")
       )
-    }else{
-      res.send("중복된 아이디 값입니다.");
+
+      for(var i=0; i<result.length; i++){
+        UserToFarmTable.create({
+          UserID : req.body.id,
+          FarmNum: result[i].FarmNum
+        }).then(
+          res.send("회원가입이 완료되었습니다.")
+        )
+      }
+      
     }
-  }).catch( err=>{
-    res.send("ERROR1");
-    next(err);
   })
+
+
+  // ).catch( err=>{
+  //   res.send("ERR1");
+  //   next(err);
+  // })
+
+
+
+  // let ID = req.body.id;
+  // UserTable.findAll({
+  //   where : { UserID : ID }
+  // }).then( result => {
+  //   if(result.length == 0){
+  //     UserTable.create({
+  //       UserName : req.body.name, 
+  //       UserID: ID,
+  //       UserPW: req.body.pw,
+  //       UserPNum: req.body.phone,
+  //       UserEmail: req.body.email
+  //     }).then(
+  //       res.send("회원가입 되었습니다.")
+  //     )
+  //   }else{
+  //     res.send("중복된 아이디 값입니다.");
+  //   }
+  // }).catch( err=>{
+  //   res.send("ERROR1");
+  //   next(err);
+  // })
 });
 
 //유저 정보 수정
@@ -107,17 +150,6 @@ router.post('/login', function(req, res, next){
   })
 })
 
-router.get('/main/:id', function(req, res, next){
-  UserTable.findAll({
-    where : {userID : req.params.id}
-  }).then( result => {
-    //console.log(UserName);
-    var name = result.UserName;
-    //console.log("hey"+name);
-    res.send(result[0].UserName);
-    //res.send(result.UserID);
-  })
-})
 
 router.get('/login', (req, res, next) => {  // 3
   if(req.session.logined){
@@ -137,5 +169,7 @@ router.post('/login/logout', (req, res) =>{
   </form>
   `);
 });
+
+//유저가 프로필 같은 것을 수정하는 페이지 필요
 
 module.exports = router;

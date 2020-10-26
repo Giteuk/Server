@@ -14,29 +14,13 @@ router.post('/create', function(req, res, next) {
     )
 });
 
+//게시글 출력 - 제목, 이름, 시간, 댓글개수 보내기
 router.get('/', function(req, res, next) {
-    //게시글 출력, title만 나와야함
-    var arr = [];
     ForumTable.findAll().then(result => {
-        console.log(result[0].title);
         if(result.length == 0){
             res.send("내용 없음");
         }else{
-            for(var i =1; i<=result.length; i++){
-                CommentTable.count( { where : { PostNum : i }} ).then(c => {
-                    // console.log("THere is "+c+ "projects");
-                    arr.push(c);
-                    console.log(c[1]);
-                })
-            }
-            console.log(arr);
-            console.log(result.length);
-            res.send(arr);
-            // var result2 = new Array();
-            // for(var i=0; i<result.length;i++){
-            //     // result2[i].id = result[i].id;
-            //     result2[i] = result[i].title;
-            // }
+            res.send(result);
         }
     })
 });
@@ -54,8 +38,6 @@ router.get('/:id', function(req, res, next){
         }).then( Comment => {
             if(Comment.length == 0)
                 console.log("존재 게시물 없음");
-            // var cnt = Comment.length;
-            // console.log(Comment.length);//댓글 갯수
             res.send({Post, Comment}); // 게시물, 댓글 내역 전송
         })
     })
@@ -68,7 +50,18 @@ router.post('/:id', function(req, res, next){
         Content : req.body.content,
         PostNum : req.params.id
     }).then(
-        res.send("댓글 생성 완료")
+       ForumTable.findAll({
+           where:{id:req.params.id}
+       }).then((target)=>{
+            ForumTable.update({
+                CommentNum: target[0].CommentNum+1
+            }, {where : { id : req.params.id}} )
+            .then( (result) => {
+                if(result) res.send("Success");
+                else res.end("ERR");
+            })
+       })
+
     )
 });
 

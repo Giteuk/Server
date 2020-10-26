@@ -1,28 +1,17 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ForumTables', {
+    await queryInterface.createTable('FarmTables', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      Title: {
+      FarmName: {
         type: Sequelize.STRING,
-        allowNull : false
-      },
-      UserName: {
-        type: Sequelize.STRING,
-        allowNull : false
-      },
-      Content: {
-        type: Sequelize.STRING
-      },
-      CommentNum: {
-        type: Sequelize.INTEGER,
-        allowNull : false,
-        defaultValue : 0
+        defaultValue: this.id+"번 밭",
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +24,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ForumTables');
+    await queryInterface.dropTable('FarmTables');
   }
 };

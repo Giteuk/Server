@@ -35,5 +35,10 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.UserTable = require('./Usertable')(sequelize, Sequelize);
+db.KeyTable = require('./keytable')(sequelize, Sequelize);
+db.CommentTable = require('./commenttable')(sequelize, Sequelize);
+db.FarmTable = require('./farmtable')(sequelize, Sequelize);
+db.ForumTable = require('./forumtable')(sequelize, Sequelize);
+db.UserToFarmTable = require('./usertofarmtable')(sequelize, Sequelize);
 
 module.exports = db;

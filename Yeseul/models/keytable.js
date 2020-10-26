@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class ForumTable extends Model {
+  class KeyTable extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,26 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  ForumTable.init({
-    Title: {
+  KeyTable.init({
+    KeyValue: {
       type : DataTypes.STRING,
-      allowNull : false
+      allowNull:false
     },
-    UserName: {
-      type : DataTypes.STRING,
-      allowNull : false
-    },
-    Content: {
-      type : DataTypes.STRING
-    },
-    CommentNum:{
-      type : DataTypes.INTEGER,
-      allowNull : false,
-      defaultValue : 0
+    FarmNum: {
+      type: DataTypes.INTEGER,
+      allowNull:false
     }
   }, {
     sequelize,
-    modelName: 'ForumTable',
+    modelName: 'KeyTable',
   });
-  return ForumTable;
+  return KeyTable;
 };
