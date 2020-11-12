@@ -13,40 +13,52 @@ router.use(session({
 }));
 
 /* 아이디가 존재하는지 검색 */
-router.get('/', function(req, res, next) {
+router.post('/search/ID', function(req, res, next) {
   UserTable.findAll({
     where : { UserID : req.body.id}
   }).then( result => {
     if(result.length == 0){
-      res.send("존재하지 않는 아이디 입니다.");
+      res.send("중복 안됨");
     }else{
-      res.send("존재하는 아이디 입니다.");
+      res.send("중복됨");
     }
   });
 });
+
+// 닉네임이 존재하는지 검색
+router.post('/search/NickName', function(req, res, next){
+  UserTable.findAll({
+    where : { UserNick : req.body.nickname}
+  }).then( result => {
+    if(result.length == 0){
+      res.send("중복 안됨");
+    }else{
+      res.send("중복됨");
+    }
+  })
+})
 
 //회원가입
 //회원가입 시도를 할 때 key값을 받아옴 -> key 값과 일치하는 밭 번호를 알아냄 -> UserToFarm테이블에 추가
 //회원 가입 시도를 할 때 ID 가 원래 있던 아이디와 동일한지 볼 필요는 없다.
 router.post('/', function(req, res, next){
-  console.log("HA:SDF");
+  console.log("회원가입 시도");
   KeyTable.findAll({
     where: { KeyValue : req.body.key}
   }).then(result => {
     console.log(result.length);
     // res.send(result);
     if(result.length == 0)
-      res.send("Key 값이 맞지 않습니다.");
+      res.send("Key권한 없음");
     else {
       //존재하는 key
       UserTable.create({
         UserName : req.body.name, 
-            UserID: req.body.id,
-            UserPW: req.body.pw,
-            UserPNum: req.body.phone,
-            UserEmail: req.body.email
+        UserID: req.body.id,
+        UserPW: req.body.pw,
+        UserPNum: req.body.phone,
+        UserEmail: req.body.email
       }).then(
-        // res.send("회원가입 되었습니다.")
         console.log("가입 완료")
       )
 
@@ -61,36 +73,6 @@ router.post('/', function(req, res, next){
       
     }
   })
-
-
-  // ).catch( err=>{
-  //   res.send("ERR1");
-  //   next(err);
-  // })
-
-
-
-  // let ID = req.body.id;
-  // UserTable.findAll({
-  //   where : { UserID : ID }
-  // }).then( result => {
-  //   if(result.length == 0){
-  //     UserTable.create({
-  //       UserName : req.body.name, 
-  //       UserID: ID,
-  //       UserPW: req.body.pw,
-  //       UserPNum: req.body.phone,
-  //       UserEmail: req.body.email
-  //     }).then(
-  //       res.send("회원가입 되었습니다.")
-  //     )
-  //   }else{
-  //     res.send("중복된 아이디 값입니다.");
-  //   }
-  // }).catch( err=>{
-  //   res.send("ERROR1");
-  //   next(err);
-  // })
 });
 
 //유저 정보 수정

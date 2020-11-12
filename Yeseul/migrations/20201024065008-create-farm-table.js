@@ -9,9 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       FarmName: {
-        type: Sequelize.STRING,
-        defaultValue: this.id+"번 밭",
-        allowNull: false
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

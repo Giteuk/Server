@@ -15,9 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   FarmTable.init({
     FarmName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: this.id+"번 밭"
+      type: DataTypes.STRING
     }
   }, {
     sequelize,

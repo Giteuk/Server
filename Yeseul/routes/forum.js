@@ -15,7 +15,11 @@ router.post('/create', function(req, res, next) {
 });
 
 //게시글 출력 - 제목, 이름, 시간, 댓글개수 보내기
-router.get('/', function(req, res, next) {
+router.get('/test', function(req, res, next) {
+    // res.send("HELLO");
+    // ForumTable.findAll({raw:true}).then(result=>{
+    //     res.joson(result);
+    // });
     ForumTable.findAll().then(result => {
         if(result.length == 0){
             res.send("내용 없음");
@@ -25,23 +29,32 @@ router.get('/', function(req, res, next) {
     })
 });
 
-//게시글 클릭했을 때, 상세페이지
-router.get('/:id', function(req, res, next){
-    ForumTable.findAll({
-        where : {id : req.params.id}
-    }).then(Post => {
-        if(Post.length == 0)
-            res.send("존재 게시물 없음");
 
-        CommentTable.findAll({ // 댓글 전송
-            where : { PostNum : req.params.id}
-        }).then( Comment => {
-            if(Comment.length == 0)
-                console.log("존재 게시물 없음");
-            res.send({Post, Comment}); // 게시물, 댓글 내역 전송
-        })
+//게시글 클릭했을 때, 상세페이지- 댓글만 -> 전체로 수정
+router.get('/:id', function(req, res, next){
+    CommentTable.findAll({ // 댓글 전송
+        where : { PostNum : req.params.id}
+    }).then( Comment => {
+        if(Comment.length == 0)
+            console.log("존재 게시물 없음");
+        res.send(Comment); // 게시물, 댓글 내역 전송
     })
+    // ForumTable.findAll({
+    //     where : {id : req.params.id}
+    // }).then(Post => {
+    //     if(Post.length == 0)
+    //         res.send("존재 게시물 없음");
+
+    //     CommentTable.findAll({ // 댓글 전송
+    //         where : { PostNum : req.params.id}
+    //     }).then( Comment => {
+    //         if(Comment.length == 0)
+    //             console.log("존재 게시물 없음");
+    //         res.send({Post, Comment}); // 게시물, 댓글 내역 전송
+    //     })
+    // })
 })
+
 
 // 게시글 내 댓글 쓰기
 router.post('/:id', function(req, res, next){
@@ -66,17 +79,17 @@ router.post('/:id', function(req, res, next){
 });
 
 //아이디별 게시글 출력
-router.get('/search/:name', function(req, res, next){
-    ForumTable.findAll({
-        where : { userID : req.params.name}
-    }).then(result=>{
-        if(result.length ==0){
-            res.send("게시글이 없습니다.");
-        }else{
-            res.send(result);
-        }
-    })
-})
+// router.get('/search/:name', function(req, res, next){
+//     ForumTable.findAll({
+//         where : { userID : req.params.name}
+//     }).then(result=>{
+//         if(result.length ==0){
+//             res.send("게시글이 없습니다.");
+//         }else{
+//             res.send(result);
+//         }
+//     })
+// })
 
 router.patch('/:id', async (req, res, next) =>{
     //게시글 업데이트
