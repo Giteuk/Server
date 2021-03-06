@@ -3,7 +3,7 @@ var router = express.Router();
 var db_config = require('../secret/database.js');
 var conn = db_config.init();
 
-// 키 값 만들기
+// 키 값 만들기 
 router.post('/newBie', function(req, res, next) {
   try{
     var key = Math.random().toString(36).slice(2);
