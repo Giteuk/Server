@@ -5,7 +5,7 @@ var conn = db_config.init();
 db_config.connect(conn);
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/:userId', function(req, res, next) {
   try{
     var sql = `SELECT * FROM Books;`;    
     conn.query(sql, function (err, rows, fields) {
