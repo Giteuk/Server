@@ -7,19 +7,27 @@ var conn = db_config.init();
 // 회원가입
 router.post('/signUp', function(req, res, next) {
   try{
-    let sql = `SELECT COUNT(*) as cnt FROM Capstone.KEY WHERE KeyValue = '${req.body.key}';`;
+    let sql = `SELECT FarmNum FROM Capstone.KEY WHERE KeyValue = '${req.body.key}';`;
     conn.query(sql, function (err, rows, fields) {
         if(err) res.send(err);
         else{
-          if(rows[0].cnt != 1){
+          if(rows.length != 1){
             res.send("Key권한 없음");
-          }else{
-            let sqlInsert = `INSERT INTO Capstone.USERS(UserId, UserPw, UserName, UserNickName, UserPhoneNum, UserEmail)
+          }else{ 
+            // USERS 테이블에 유저의 정보 값 넣기
+            let sqlInsert = `INSERT INTO USERS(UserId, UserPw, UserName, UserNickName, UserPhoneNum, UserEmail)
                         VALUES ( '${req.body.id}', '${req.body.pw}', '${req.body.name}', '${req.body.nickname}', '${req.body.phone}' , '${req.body.email}');`;
-            conn.query(sqlInsert, function(err, result, fields1){
+            conn.query(sqlInsert, function(err, result, fields2){
               if(err) res.send(err);
               else{
-                res.send("회원가입이 완료되었습니다.");
+                // USERS_TO_FARM 테이블에 갖고있는 밭 번호 넣기
+                let sqlInsertFarmN = `INSERT INTO USER_TO_FARM(UserId, FarmNum) VALUES (${result.insertId}, '${rows[0].FarmNum}')`
+                conn.query(sqlInsertFarmN, function(err, result2, fields3){
+                  if(err) res.send(err);
+                  else{
+                    res.send("회원가입이 완료되었습니다.");
+                  }
+                })
               }
             })
           }
