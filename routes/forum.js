@@ -43,7 +43,7 @@ router.route('/')
   })
 
 router.route('/:id')
-  .get((req, res, next)=>{ // 세부 게시글 확인
+  .get((req, res, next)=>{ // 세부 게시글 확인 
     // 무슨 값을 보내줘야하는지 논의 필요
     res.send("세부 게시글 확인");
   })
