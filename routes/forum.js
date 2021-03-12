@@ -63,11 +63,28 @@ router.route('/:id')
   })
   .patch((req, res, next) => { // 게시글 수정
     try{
-      let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id='${req.params.id}'`;
+      let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id=${req.params.id}`;
       conn.query(sql, (err, result, fields)=>{
         if(err) res.send(err);
         else{
           res.send("게시글 수정 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
+  .delete((req, res, next)=>{ // 게시글 삭제
+    try{
+      let sql = `DELETE FROM COMMENT WHERE PostNum = ${req.params.id}`;
+      conn.query(sql, (err, result, fields) => {
+        if(err) res.send(err);
+        else{
+          let sql2 = `DELETE FROM FORUM WHERE id = ${req.params.id}`;
+          conn.query(sql2, (err, result, fields2) => {
+            if(err) res.send(err);
+            else res.send("게시글 삭제 성공");
+          })
         }
       })
     }catch(err){
