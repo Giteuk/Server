@@ -61,5 +61,18 @@ router.route('/:id')
       res.send(err);
     }
   })
+  .patch((req, res, next) => { // 게시글 수정
+    try{
+      let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id='${req.params.id}'`;
+      conn.query(sql, (err, result, fields)=>{
+        if(err) res.send(err);
+        else{
+          res.send("게시글 수정 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
 
 module.exports = router;
