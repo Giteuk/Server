@@ -6,8 +6,8 @@ var conn = db_config.init();
 router.route('/')
   .post((req, res, next)=>{ // 게시글 쓰기
     try{
-      let sql = `INSERT INTO FORUM(Title, UserNickName, Content, CreatedDate) 
-            VALUES ( '${req.body.title}', '${req.body.nickName}', '${req.body.content}', now());`; 
+      let sql = `INSERT INTO FORUM(UserId, Title, UserNickName, Content, CreatedDate) 
+            VALUES (${req.body.userIdent}, '${req.body.title}', '${req.body.nickName}', '${req.body.content}', now());`; 
   
       conn.query(sql, function (err, rows, fields) {
           if(err) res.send(err);
@@ -93,5 +93,34 @@ router.route('/:id')
   })
 
 
+router.get('/user/post/:userId', (req, res, next)=> { // 아이디별 게시글 출력
+  try{
+    let sql = `
+    SELECT id, Title as title, UserNickName as userNickName, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, commentCnt 
+      FROM FORUM f 
+        LEFT JOIN (
+          SELECT PostNum, COUNT(PostNum) as commentCnt 
+          FROM COMMENT c 
+          GROUP BY PostNum 
+        ) cmtCnt
+        ON(f.id = cmtCnt.PostNum)
+      WHERE UserId = ${req.params.userId}
+    `;
+    conn.query(sql, (err, result, fields) => {
+      if(err) res.send(err);
+      else {
+        if(result.length == 0) res.send("검색 결과가 없습니다.");
+        else
+          res.json(result);
+      }
+    })
+  }catch(err){
+    res.send(err);
+  }
+})
+
+router.get('/user/com/:userId', (req, res, next)=>{ // 아이디별 댓글 출력
+
+})
 
 module.exports = router;
