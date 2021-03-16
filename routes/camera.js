@@ -11,14 +11,16 @@ router.get('/:Farmid', function(req, res, next) {
     conn.query(sql, function (err, rows, fields) {
         if(err) res.send(err);
         else{
-          //res.send(rows);
-          let Link=[];
-          for(let i=0; i<rows.length; i++){
-            let temp={link:rows[i].Streamlink}
-          }
-          Link.push(temp);
-        } 
-        res.json(Link);
+          let camera1;
+          let camera2;
+          let camera3;
+         
+          camera1=rows[0].Streamlink;
+          camera2=rows[1].Streamlink;
+          camera3=rows[2].Streamlink;
+          
+          res.json({camera1,camera2,camera3});
+        }
     });
   }catch(err){
     res.send(err);
