@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var cameraRouter=require('./routes/camera');
+var wheatherRouter=require('./routes/wheather');
 var manageRouter = require('./routes/manage');
 var forumRouter = require('./routes/forum');
 
@@ -22,6 +24,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
+app.use('/camera',cameraRouter);
+app.use('/wheather',wheatherRouter);
 app.use('/manage', manageRouter);
 app.use('/forum', forumRouter);
 app.use('/', indexRouter);
