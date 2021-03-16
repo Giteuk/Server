@@ -30,13 +30,13 @@ router.get('/:userId', function(req, res, next) {
           else{
             let userInfo = {
               farmCnt : result.length,
-              farmId : [],
+              farmID : [],
               farmName : [],
-              userIndent : result[0].id,
-              userName : result[0].UserName,
-              userNickName : result[0].UserNickName,
-              userPhone : result[0].UserPhoneNum,
-              userEmail : result[0].UserEmail
+              UserIndent : result[0].id,
+              UserName : result[0].UserName,
+              UserNickName : result[0].UserNickName,
+              UserPhoneNum : result[0].UserPhoneNum,
+              UserEmail : result[0].UserEmail
             }
             for(let i=0; i<result.length; i++){
               userInfo.farmId.push(result[i].FarmId);

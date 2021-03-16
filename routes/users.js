@@ -57,7 +57,7 @@ router.post('/search/ID', function(req, res, next){
 // 닉네임 존재 유무
 router.post('/search/NickName', function(req, res, next){
   try{
-    let sql = `SELECT COUNT(*) as cnt FROM USERS WHERE UserNickName = '${req.body.nickName}';`;
+    let sql = `SELECT COUNT(*) as cnt FROM USERS WHERE UserNickName = '${req.body.nickname}';`;
     conn.query(sql, function(err, result, fields){
       if(err) res.send(err);
       else{
