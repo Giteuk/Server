@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
       res.send("ERROR");
     else{
       // 통신 성공 시 들어오는 곳
-      console.log("현재온도 : "+ (body.main.temp) );
+      /*console.log("현재온도 : "+ (body.main.temp) );
       console.log("현재습도 : "+ body.main.humidity);
       console.log("날씨 : "+ body.weather[0].main );
       console.log("상세날씨설명 : "+ body.weather[0].description );
@@ -25,8 +25,11 @@ router.get('/', function(req, res, next) {
       console.log("바람   : "+ body.wind.speed );
       console.log("나라   : "+ body.sys.country );
       console.log("도시이름  : "+ body.name );
-      console.log("구름  : "+ (body.clouds.all) +"%" );  
-      res.json(body);//추후 상의후 통신형식 설정 예정
+      console.log("구름  : "+ (body.clouds.all) +"%" );  */
+      let weather=body.weather[0].main;
+      let weather_imgurl="http://openweathermap.org/img/w/" + body.weather[0].icon + ".png";
+      
+      res.json({weather,weather_imgurl});//추후 상의후 통신형식 설정 예정
     }
   })
 });
