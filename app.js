@@ -29,8 +29,8 @@ app.use('/camera',cameraRouter);
 app.use('/wheather',wheatherRouter);
 app.use('/manage', manageRouter);
 app.use('/forum', forumRouter);
-app.use('/', indexRouter);
 app.use('/sensor', sensorRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
