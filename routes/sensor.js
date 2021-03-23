@@ -48,6 +48,32 @@ router.post('/field3', function(req, res, next) {
     }
 });
 
+/*send average value of 7days soil humidity sensor data + date*/
+/*field1*/
+router.post('/soilavg1', function(req, res, next) {
+  try{
+    sendAvgValue(res,1);
+  }catch(err){
+    res.send(err);
+  }
+});
+/*field2*/
+router.post('/soilavg2', function(req, res, next) {
+  try{
+    sendAvgValue(res,2);
+  }catch(err){
+    res.send(err);
+  }
+});
+/*field3*/
+router.post('/soilavg3', function(req, res, next) {
+  try{
+    sendAvgValue(res,3);
+  }catch(err){
+    res.send(err);
+  }
+});
+
 function sendAndroid(res,fnumber){
   var sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
         conn.query(sql, function (err, rows, fields) {
@@ -70,6 +96,17 @@ function sendAndroid(res,fnumber){
               res.send(send);
             } 
         });
+}
+
+function sendAvgValue(res,fnumber){
+  var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
+  conn.query(sql, function (err, rows, fields) {
+    
+    if(err) res.send(err);
+    else{
+        res.send(rows);
+      } 
+  });
 }
 
 function tem(value){
@@ -110,20 +147,7 @@ function lgt(value){
     else
         return "흐립니다";  
 }
-/*send average value of 7days soil humidity sensor data + date*/
-router.post('/soilavg', function(req, res, next) {
-  try{
-    var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=1 GROUP BY date HAVING max(date) > (SELECT DATE_SUB('DATE(NOW())',INTERVAL 7 DAY))`;      
-    conn.query(sql, function (err, rows, fields) {
-      
-      if(err) res.send(err);
-      else{
-          res.send(rows);
-        } 
-    });
-  }catch(err){
-    res.send(err);
-  }
-});
+
 /**/
+
 module.exports = router;
