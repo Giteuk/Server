@@ -84,7 +84,7 @@ function sendAndroid(res,fnumber){
           let humi = rows[0].humi;
           let soil = rows[0].soil;
           let light = rows[0].light;
-          var comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
+          let comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
           let send = {
               temp,
               humi,
