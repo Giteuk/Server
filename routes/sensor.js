@@ -77,15 +77,15 @@ router.get('/soilavg3', function(req, res, next) {
 
 
 function sendAndroid(res,fnumber){
-  var sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
+  let sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
         conn.query(sql, function (err, rows, fields) {
           
-          var temp = rows[0].temp;
-          var humi = rows[0].humi;
-          var soil = rows[0].soil;
-          var light = rows[0].light;
+          let temp = rows[0].temp;
+          let humi = rows[0].humi;
+          let soil = rows[0].soil;
+          let light = rows[0].light;
           var comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
-          var send = {
+          let send = {
               temp,
               humi,
               soil,
@@ -101,7 +101,7 @@ function sendAndroid(res,fnumber){
 }
 
 function sendAvgValue(res,fnumber){
-  var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
+  let sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
   conn.query(sql, function (err, rows, fields) {
     
     if(err) res.send(err);
