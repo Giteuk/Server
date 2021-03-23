@@ -22,7 +22,7 @@ router.get('/:field/:tem/:hum/:soil/:lig', function(req, res, next) {
 /*Android*/
 /*send common sensor data + total comment*/
 /*field1*/
-router.post('/field1', function(req, res, next) {
+router.get('/field1', function(req, res, next) {
     try{
       sendAndroid(res,1);
 
@@ -31,7 +31,7 @@ router.post('/field1', function(req, res, next) {
     }
 });
 /*field2*/
-router.post('/field2', function(req, res, next) {
+router.get('/field2', function(req, res, next) {
     try{
       sendAndroid(res,2);
 
@@ -40,7 +40,7 @@ router.post('/field2', function(req, res, next) {
     }
 });
 /*field3*/
-router.post('/field3', function(req, res, next) {
+router.get('/field3', function(req, res, next) {
     try{
       sendAndroid(res,3);
     }catch(err){
@@ -50,7 +50,7 @@ router.post('/field3', function(req, res, next) {
 
 /*send average value of 7days soil humidity sensor data + date*/
 /*field1*/
-router.post('/soilavg1', function(req, res, next) {
+router.get('/soilavg1', function(req, res, next) {
   try{
     sendAvgValue(res,1);
   }catch(err){
@@ -58,7 +58,7 @@ router.post('/soilavg1', function(req, res, next) {
   }
 });
 /*field2*/
-router.post('/soilavg2', function(req, res, next) {
+router.get('/soilavg2', function(req, res, next) {
   try{
     sendAvgValue(res,2);
   }catch(err){
@@ -66,7 +66,7 @@ router.post('/soilavg2', function(req, res, next) {
   }
 });
 /*field3*/
-router.post('/soilavg3', function(req, res, next) {
+router.get('/soilavg3', function(req, res, next) {
   try{
     sendAvgValue(res,3);
   }catch(err){
