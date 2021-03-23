@@ -113,7 +113,7 @@ function lgt(value){
 /*send average value of 7days soil humidity sensor data + date*/
 router.post('/soilavg', function(req, res, next) {
   try{
-    var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=1 GROUP BY date HAVING max(date) > (SELECT DATE_SUB('2021-03-22',INTERVAL 7 DAY))`;      
+    var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=1 GROUP BY date HAVING max(date) > (SELECT DATE_SUB('DATE(NOW())',INTERVAL 7 DAY))`;      
     conn.query(sql, function (err, rows, fields) {
       
       if(err) res.send(err);
