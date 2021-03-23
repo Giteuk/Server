@@ -39,7 +39,7 @@ router.get('/:userId', function(req, res, next) {
               UserEmail : result[0].UserEmail
             }
             for(let i=0; i<result.length; i++){
-              userInfo.farmId.push(result[i].FarmId);
+              userInfo.farmID.push(result[i].FarmId);
               userInfo.farmName.push(result[i].FarmName);
             }
             res.json(userInfo);
