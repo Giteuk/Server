@@ -32,7 +32,7 @@ router.get('/:userId', function(req, res, next) {
               farmCnt : result.length,
               farmID : [],
               farmName : [],
-              UserIndent : result[0].id,
+              UserIdent : result[0].id,
               UserName : result[0].UserName,
               UserNickName : result[0].UserNickName,
               UserPhoneNum : result[0].UserPhoneNum,
