@@ -73,6 +73,8 @@ router.post('/soilavg3', function(req, res, next) {
     res.send(err);
   }
 });
+/**/
+
 
 function sendAndroid(res,fnumber){
   var sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
@@ -147,7 +149,4 @@ function lgt(value){
     else
         return "흐립니다";  
 }
-
-/**/
-
 module.exports = router;
