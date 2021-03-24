@@ -44,8 +44,39 @@ router.route('/')
 
 router.route('/:id')
   .get((req, res, next)=>{ // 세부 게시글 확인 
-    // 무슨 값을 보내줘야하는지 논의 필요
-    res.send("세부 게시글 확인");
+    try{
+      let sql = `
+                SELECT id, Title, UserNickName, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, IFNULL(commentCnt, 0) as CommentCnt 
+                FROM FORUM f 
+                  LEFT JOIN (
+                    SELECT PostNum, COUNT(PostNum) as commentCnt 
+                    FROM COMMENT c 
+                    GROUP BY PostNum 
+                  ) cmtCnt
+                  ON(f.id = cmtCnt.PostNum)
+                WHERE f.id = ${req.params.id};`; 
+      conn.query(sql, function (err, Post, fields) {
+        try{
+          if(err) res.send(err);
+          else{
+            let sql2 = `
+            SELECT id, UserNickName as nickname, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date
+            FROM COMMENT c 
+            WHERE PostNum = ${req.params.id}`;
+            conn.query(sql2, function(err, Comment, fields){
+              if(err) res.send(err);
+              else{
+                res.json({Post, Comment});
+              } 
+            })
+          }
+        }catch(err2){
+          res.send(err2);
+        }
+      });
+    }catch(err){
+      res.send(err);
+    }
   })
   .post((req, res, next)=> { // 게시글 내 댓글 쓰기
     try{
