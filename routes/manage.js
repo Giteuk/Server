@@ -7,12 +7,15 @@ var conn = db_config.init();
 router.post('/newBie', function(req, res, next) {
   try{
     var key = Math.random().toString(36).slice(2);
-    let Fnum = req.body.farmNum;
     let farmId = '';
-    for(var i=1; i<=Fnum[0]; i++){
-      console.log(Fnum[i]);
-      farmId += Fnum[i];
-      if( i != Fnum.length-1) farmId += ', ';
+    if(req.body.farm[0] == -1){
+      // 관리자
+      farmId = '-1';
+    }else{
+      for(var i=0; i<=req.body.farm.length-1; i++){
+        farmId += req.body.farm[i];
+        if( i != req.body.farm.length-1) farmId += ', ';
+      }
     }
     var sql = `INSERT INTO Capstone.KEY(KeyValue, FarmNum) VALUES ( '${key}', '${farmId}');`; 
 
