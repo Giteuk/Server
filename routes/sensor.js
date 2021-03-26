@@ -22,7 +22,7 @@ router.get('/:field/:tem/:hum/:soil/:lig', function(req, res, next) {
 /*Android*/
 /*send common sensor data + total comment*/
 /*field1*/
-router.post('/field1', function(req, res, next) {
+router.get('/field1', function(req, res, next) {
     try{
       sendAndroid(res,1);
 
@@ -31,7 +31,7 @@ router.post('/field1', function(req, res, next) {
     }
 });
 /*field2*/
-router.post('/field2', function(req, res, next) {
+router.get('/field2', function(req, res, next) {
     try{
       sendAndroid(res,2);
 
@@ -40,7 +40,7 @@ router.post('/field2', function(req, res, next) {
     }
 });
 /*field3*/
-router.post('/field3', function(req, res, next) {
+router.get('/field3', function(req, res, next) {
     try{
       sendAndroid(res,3);
     }catch(err){
@@ -50,7 +50,7 @@ router.post('/field3', function(req, res, next) {
 
 /*send average value of 7days soil humidity sensor data + date*/
 /*field1*/
-router.post('/soilavg1', function(req, res, next) {
+router.get('/soilavg1', function(req, res, next) {
   try{
     sendAvgValue(res,1);
   }catch(err){
@@ -58,7 +58,7 @@ router.post('/soilavg1', function(req, res, next) {
   }
 });
 /*field2*/
-router.post('/soilavg2', function(req, res, next) {
+router.get('/soilavg2', function(req, res, next) {
   try{
     sendAvgValue(res,2);
   }catch(err){
@@ -66,7 +66,7 @@ router.post('/soilavg2', function(req, res, next) {
   }
 });
 /*field3*/
-router.post('/soilavg3', function(req, res, next) {
+router.get('/soilavg3', function(req, res, next) {
   try{
     sendAvgValue(res,3);
   }catch(err){
@@ -77,15 +77,15 @@ router.post('/soilavg3', function(req, res, next) {
 
 
 function sendAndroid(res,fnumber){
-  var sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
+  let sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
         conn.query(sql, function (err, rows, fields) {
           
-          var temp = rows[0].temp;
-          var humi = rows[0].humi;
-          var soil = rows[0].soil;
-          var light = rows[0].light;
-          var comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
-          var send = {
+          let temp = rows[0].temp;
+          let humi = rows[0].humi;
+          let soil = rows[0].soil;
+          let light = rows[0].light;
+          let comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
+          let send = {
               temp,
               humi,
               soil,
@@ -101,7 +101,7 @@ function sendAndroid(res,fnumber){
 }
 
 function sendAvgValue(res,fnumber){
-  var sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
+  let sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
   conn.query(sql, function (err, rows, fields) {
     
     if(err) res.send(err);
