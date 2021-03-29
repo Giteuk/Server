@@ -123,6 +123,35 @@ router.route('/:id')
     }
   })
 
+router.route('/com/:comId')
+  .patch((req, res, next)=>{ // 댓글 수정
+    try{
+      let sql = `UPDATE COMMENT SET Content='${req.body.content}' WHERE id=${req.params.comId}`;
+      conn.query(sql, (err, result, fields) => {
+        if(err) res.send(err);
+        else{
+          if(err) res.send(err);
+          else res.send("댓글 수정 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
+  .delete((req, res, next)=>{ // 댓글 삭제
+    try{
+      let sql = `DELETE FROM COMMENT WHERE id=${req.params.comId}`
+      conn.query(sql, (err, result, fields) => {
+        if(err) res.send(err)
+        else{
+          if(err) res.send(err);
+          else res.send("댓글 삭제 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
 
 router.get('/user/post/:userId', (req, res, next)=> { // 아이디별 게시글 출력
   try{
