@@ -19,7 +19,7 @@ router.route('/')
       res.send(err);
     }
   })
-  .get((req, res, next)=>{ // 모든 게시글 확인
+  .get((req, res, next)=>{ // 게시글 확인
     try{
       let sql = `
       SELECT id, Title, UserNickName, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, CommentCnt 
@@ -30,7 +30,10 @@ router.route('/')
           GROUP BY PostNum 
         ) cmtCnt
         ON(f.id = cmtCnt.PostNum)
-      ;`; 
+      `; 
+      if(req.query.keyword) // 주소에 쿼리스트링 쓰기
+          sql += `WHERE Title LIKE '%${req.query.keyword}%' OR Content LIKE '%${req.query.keyword}%'`;
+      sql+=';';
       conn.query(sql, function (err, result, fields) {
           if(err) res.send(err);
           else{
