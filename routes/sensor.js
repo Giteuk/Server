@@ -101,7 +101,7 @@ function sendAndroid(res,fnumber){
 }
 
 function sendAvgValue(res,fnumber){
-  let setDate =`'2021-03-22'` 
+  let setDate =`DATE(NOW())` 
   let sql = `WITH dateTable AS(SELECT date_format(DATE_SUB(${setDate},INTERVAL 6 DAY),'%Y-%m-%d') as date UNION ALL `+
                 `SELECT date_format(DATE_SUB(${setDate},INTERVAL 5 DAY),'%Y-%m-%d') as date UNION ALL `+
                 `SELECT date_format(DATE_SUB(${setDate},INTERVAL 4 DAY),'%Y-%m-%d') as date UNION ALL `+
