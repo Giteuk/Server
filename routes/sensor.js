@@ -101,12 +101,21 @@ function sendAndroid(res,fnumber){
 }
 
 function sendAvgValue(res,fnumber){
-  let sql = `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(DATE(NOW()),INTERVAL 7 DAY))`;      
+  let setDate =`'2021-03-22'` 
+  let sql = `WITH dateTable AS(SELECT date_format(DATE_SUB(${setDate},INTERVAL 6 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(DATE_SUB(${setDate},INTERVAL 5 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(DATE_SUB(${setDate},INTERVAL 4 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(DATE_SUB(${setDate},INTERVAL 3 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(DATE_SUB(${setDate},INTERVAL 2 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(DATE_SUB(${setDate},INTERVAL 1 DAY),'%Y-%m-%d') as date UNION ALL `+
+                `SELECT date_format(${setDate},'%Y-%m-%d') as date) `+
+              `SELECT dateTable.date, IFNULL(sensorTable.soilavg,'0') as soilavg FROM dateTable LEFT JOIN (`+
+              `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(${setDate},INTERVAL 7 DAY))`+
+              `) as sensorTable ON dateTable.date = sensorTable.date`;      
   conn.query(sql, function (err, rows, fields) {
-    
     if(err) res.send(err);
     else{
-        res.send(rows);
+      res.send(rows);
       } 
   });
 }
