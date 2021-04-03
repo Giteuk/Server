@@ -19,7 +19,7 @@ router.route('/')
       res.send(err);
     }
   })
-  .get((req, res, next)=>{ // 모든 게시글 확인
+  .get((req, res, next)=>{ // 게시글 확인
     try{
       let sql = `
       SELECT id, Title, UserNickName, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, CommentCnt 
@@ -30,7 +30,10 @@ router.route('/')
           GROUP BY PostNum 
         ) cmtCnt
         ON(f.id = cmtCnt.PostNum)
-      ;`; 
+      `; 
+      if(req.query.keyword) // 주소에 쿼리스트링 쓰기
+          sql += `WHERE Title LIKE '%${req.query.keyword}%' OR Content LIKE '%${req.query.keyword}%'`;
+      sql+=';';
       conn.query(sql, function (err, result, fields) {
           if(err) res.send(err);
           else{
@@ -44,8 +47,39 @@ router.route('/')
 
 router.route('/:id')
   .get((req, res, next)=>{ // 세부 게시글 확인 
-    // 무슨 값을 보내줘야하는지 논의 필요
-    res.send("세부 게시글 확인");
+    try{
+      let sql = `
+                SELECT id, Title, UserNickName, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, IFNULL(commentCnt, 0) as CommentCnt 
+                FROM FORUM f 
+                  LEFT JOIN (
+                    SELECT PostNum, COUNT(PostNum) as commentCnt 
+                    FROM COMMENT c 
+                    GROUP BY PostNum 
+                  ) cmtCnt
+                  ON(f.id = cmtCnt.PostNum)
+                WHERE f.id = ${req.params.id};`; 
+      conn.query(sql, function (err, Post, fields) {
+        try{
+          if(err) res.send(err);
+          else{
+            let sql2 = `
+            SELECT id, UserNickName as nickname, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date
+            FROM COMMENT c 
+            WHERE PostNum = ${req.params.id}`;
+            conn.query(sql2, function(err, Comment, fields){
+              if(err) res.send(err);
+              else{
+                res.json({Post, Comment});
+              } 
+            })
+          }
+        }catch(err2){
+          res.send(err2);
+        }
+      });
+    }catch(err){
+      res.send(err);
+    }
   })
   .post((req, res, next)=> { // 게시글 내 댓글 쓰기
     try{
@@ -92,6 +126,35 @@ router.route('/:id')
     }
   })
 
+router.route('/com/:comId')
+  .patch((req, res, next)=>{ // 댓글 수정
+    try{
+      let sql = `UPDATE COMMENT SET Content='${req.body.content}' WHERE id=${req.params.comId}`;
+      conn.query(sql, (err, result, fields) => {
+        if(err) res.send(err);
+        else{
+          if(err) res.send(err);
+          else res.send("댓글 수정 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
+  .delete((req, res, next)=>{ // 댓글 삭제
+    try{
+      let sql = `DELETE FROM COMMENT WHERE id=${req.params.comId}`
+      conn.query(sql, (err, result, fields) => {
+        if(err) res.send(err)
+        else{
+          if(err) res.send(err);
+          else res.send("댓글 삭제 성공");
+        }
+      })
+    }catch(err){
+      res.send(err);
+    }
+  })
 
 router.get('/user/post/:userId', (req, res, next)=> { // 아이디별 게시글 출력
   try{
