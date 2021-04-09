@@ -159,10 +159,10 @@ router.route('/com/:comId')
 router.get('/user/post/:userId', (req, res, next)=> { // 아이디별 게시글 출력
   try{
     let sql = `
-    SELECT id, Title as title, UserNickName as userNickName, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, commentCnt 
+    SELECT id, Title, UserNickName, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, CommentCnt 
       FROM FORUM f 
         LEFT JOIN (
-          SELECT PostNum, COUNT(PostNum) as commentCnt 
+          SELECT PostNum, COUNT(PostNum) as CommentCnt 
           FROM COMMENT c 
           GROUP BY PostNum 
         ) cmtCnt
@@ -208,10 +208,10 @@ router.get('/user/com/:userId', (req, res, next)=>{ // 아이디별 댓글 출�
           if(result[i].userCmt != null){
             let temp = {
               id : result[i].id,
-              title : result[i].Title,
-              userNickName : result[i].UserNickName,
+              Title : result[i].Title,
+              UserNickName : result[i].UserNickName,
               date : result[i].date,
-              commentCnt : result[i].cmtCnt
+              CommentCnt : result[i].cmtCnt
             }
             inform.push(temp);
           }
