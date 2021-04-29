@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var db_config = require('../secret/database.js');
-var conn = db_config.init();
+var db_info = require('../secret/database.js');
+var mysql = require('mysql');
 
 router.route('/')
   .post((req, res, next)=>{ // 게시글 쓰기
@@ -9,9 +9,15 @@ router.route('/')
       let sql = `INSERT INTO FORUM(UserId, Title, UserNickName, Content, CreatedDate) 
             VALUES (${req.body.userIdent}, '${req.body.title}', '${req.body.nickname}', '${req.body.content}', now());`; 
   
-      conn.query(sql, function (err, rows, fields) {
-          if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, function (err, rows, fields) {
+          if(err){
+            connection.end();
+            res.send(err);
+          }
           else{
+            connection.end();
             res.send('게시글 쓰기 성공');
           } 
       });
@@ -34,9 +40,12 @@ router.route('/')
       if(req.query.keyword) // 주소에 쿼리스트링 쓰기
           sql += `WHERE Title LIKE '%${req.query.keyword}%' OR Content LIKE '%${req.query.keyword}%'`;
       sql+=';';
-      conn.query(sql, function (err, result, fields) {
-          if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, function (err, result, fields) {
+          if(err){ connection.end(); res.send(err); }
           else{
+            connection.end();
             res.json(result);
           } 
       });
@@ -58,7 +67,9 @@ router.route('/:id')
                   ) cmtCnt
                   ON(f.id = cmtCnt.PostNum)
                 WHERE f.id = ${req.params.id};`; 
-      conn.query(sql, function (err, Post, fields) {
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, function (err, Post, fields) {
         try{
           if(err) res.send(err);
           else{
@@ -66,9 +77,10 @@ router.route('/:id')
             SELECT id, UserNickName as nickname, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date
             FROM COMMENT c 
             WHERE PostNum = ${req.params.id}`;
-            conn.query(sql2, function(err, Comment, fields){
-              if(err) res.send(err);
+            connection.query(sql2, function(err, Comment, fields){
+              if(err){ res.send(err); connection.end(); }
               else{
+                connection.end();
                 res.json({Post, Comment});
               } 
             })
@@ -85,9 +97,12 @@ router.route('/:id')
     try{
       let sql = `INSERT INTO COMMENT(UserId, UserNickName, Content, PostNum, CreatedDate) 
             VALUES (${req.body.userIdent}, '${req.body.nickname}', '${req.body.content}', '${req.params.id}', now());`; 
-      conn.query(sql, function (err, rows, fields) {
-          if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, function (err, rows, fields) {
+          if(err){ connection.end(); res.send(err); }
           else{
+            connection.end();
             res.send('댓글 작성 성공');
           } 
       });
@@ -98,9 +113,12 @@ router.route('/:id')
   .patch((req, res, next) => { // 게시글 수정
     try{
       let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id=${req.params.id}`;
-      conn.query(sql, (err, result, fields)=>{
-        if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, (err, result, fields)=>{
+        if(err){ connection.end(); res.send(err);}
         else{
+          connection.end();
           res.send("게시글 수정 성공");
         }
       })
@@ -111,13 +129,18 @@ router.route('/:id')
   .delete((req, res, next)=>{ // 게시글 삭제
     try{
       let sql = `DELETE FROM COMMENT WHERE PostNum = ${req.params.id}`;
-      conn.query(sql, (err, result, fields) => {
-        if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, (err, result, fields) => {
+        if(err) {connection.end(); res.send(err);}
         else{
           let sql2 = `DELETE FROM FORUM WHERE id = ${req.params.id}`;
-          conn.query(sql2, (err, result, fields2) => {
-            if(err) res.send(err);
-            else res.send("게시글 삭제 성공");
+          connection.query(sql2, (err, result, fields2) => {
+            if(err) { connection.end(); res.send(err);}
+            else {
+              connection.end();
+              res.send("게시글 삭제 성공");
+            }
           })
         }
       })
@@ -130,11 +153,13 @@ router.route('/com/:comId')
   .patch((req, res, next)=>{ // 댓글 수정
     try{
       let sql = `UPDATE COMMENT SET Content='${req.body.content}' WHERE id=${req.params.comId}`;
-      conn.query(sql, (err, result, fields) => {
-        if(err) res.send(err);
+      let connection = mysql.createConnection(db_info);
+      connection.connect();
+      connection.query(sql, (err, result, fields) => {
+        if(err) {connection.end(); res.send(err);}
         else{
           if(err) res.send(err);
-          else res.send("댓글 수정 성공");
+          else { connection.end(); res.send("댓글 수정 성공");}
         }
       })
     }catch(err){
@@ -144,11 +169,13 @@ router.route('/com/:comId')
   .delete((req, res, next)=>{ // 댓글 삭제
     try{
       let sql = `DELETE FROM COMMENT WHERE id=${req.params.comId}`
+      let conn = mysql.createConnection(db_info);
+      conn.connect();
       conn.query(sql, (err, result, fields) => {
         if(err) res.send(err)
         else{
           if(err) res.send(err);
-          else res.send("댓글 삭제 성공");
+          else{ conn.end(); res.send("댓글 삭제 성공");}
         }
       })
     }catch(err){
@@ -169,12 +196,14 @@ router.get('/user/post/:userId', (req, res, next)=> { // 아이디별 게시글 
         ON(f.id = cmtCnt.PostNum)
       WHERE UserId = ${req.params.userId}
     `;
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
     conn.query(sql, (err, result, fields) => {
       if(err) res.send(err);
       else {
-        if(result.length == 0) res.send("검색 결과가 없습니다.");
+        if(result.length == 0){ conn.end(); res.send("검색 결과가 없습니다."); }
         else
-          res.json(result);
+          { conn.end(); res.json(result);}
       }
     })
   }catch(err){
@@ -199,12 +228,14 @@ router.get('/user/com/:userId', (req, res, next)=>{ // 아이디별 댓글 출�
       ) cmtCnt 
       ON f.id = cmtCnt.PostNum 
     `;
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
     conn.query(sql, (err, result, fields) => {
       if(err) res.send(err);
       else {
         let inform = [];
         for(let i=0; i<result.length;i++){
-          console.log(result[i].cmtCnt)
+          // console.log(result[i].cmtCnt)
           if(result[i].userCmt != null){
             let temp = {
               id : result[i].id,
@@ -216,6 +247,7 @@ router.get('/user/com/:userId', (req, res, next)=>{ // 아이디별 댓글 출�
             inform.push(temp);
           }
         }
+        conn.end();
         res.json(inform);
       }
     })

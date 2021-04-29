@@ -1,17 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var db_config = require('../secret/database.js');
-var conn = db_config.init();
-db_config.connect(conn);
+var db_info = require('../secret/database.js');
+var mysql = require('mysql');
 
 /* 로그인 한 유저 정보 */
 router.get('/:userId', function(req, res, next) {
   try{
     let sql = `SELECT u.id as UserIdent, UserName, UserNickName, UserPhoneNum, UserEmail, FarmNum 
                 FROM USERS u JOIN USER_TO_FARM utf ON u.id = utf.UserId WHERE u.UserId = '${req.params.userId}';`;
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
     conn.query(sql, function(err, result, fields){
       if(result.length == 0){
         // 로그인 실패
+        conn.end();
         res.send("잘못된 접근입니다.");
       }else if(result[0].FarmNum == '-1'){
         // 관리자
@@ -31,6 +33,7 @@ router.get('/:userId', function(req, res, next) {
             userInfo.farmID.push(result2[i].id);
             userInfo.farmName.push(result2[i].FarmName);
           }
+          conn.end();
           res.json(userInfo);
         })
       }
@@ -53,7 +56,7 @@ router.get('/:userId', function(req, res, next) {
           WHERE u.UserId = '${req.params.userId}'
         `;
         conn.query(sqlUser, function (err, result, fields) {
-            if(err) res.send(err);
+            if(err){ conn.end(); res.send(err);}
             else{
               let userInfo = {
                 farmCnt : result.length,
@@ -69,6 +72,7 @@ router.get('/:userId', function(req, res, next) {
                 userInfo.farmID.push(result[i].FarmId);
                 userInfo.farmName.push(result[i].FarmName);
               }
+              conn.end();
               res.json(userInfo);
             } 
         });

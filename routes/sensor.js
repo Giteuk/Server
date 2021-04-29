@@ -1,17 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var db_config = require('../secret/database.js');
-var conn = db_config.init();
-db_config.connect(conn);
+var db_info = require('../secret/database.js');
+var mysql = require('mysql');
 
 /*Arduino*/
 router.get('/:field/:tem/:hum/:soil/:lig', function(req, res, next) {
   try{
     var sql = `INSERT INTO Capstone.SENSOR(fid,temp,humi,soil,light,date) VALUES('${req.params.field}','${req.params.tem}', '${req.params.hum}', '${req.params.soil}', '${req.params.lig}',DATE(NOW()))`;    
 
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
     conn.query(sql, function (err, rows, fields) {
-        if(err) res.send(err);
+        if(err) { conn.end(); res.send(err);}
         else{
+          conn.end();
           res.send("센서전송");
         } 
     });
@@ -78,26 +80,29 @@ router.get('/soilavg3', function(req, res, next) {
 
 function sendAndroid(res,fnumber){
   let sql = `SELECT temp, humi, soil, light FROM Capstone.SENSOR WHERE ID in (SELECT max(ID) FROM Capstone.SENSOR as findMAX WHERE fid=${fnumber});`;    
-        conn.query(sql, function (err, rows, fields) {
-          
-          let temp = rows[0].temp;
-          let humi = rows[0].humi;
-          let soil = rows[0].soil;
-          let light = rows[0].light;
-          let comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
-          let send = {
-              temp,
-              humi,
-              soil,
-              light,
-              comment
-          }
-          
-          if(err) res.send(err);
-          else{
-              res.send(send);
-            } 
-        });
+  let conn = mysql.createConnection(db_info);
+  conn.connect();
+  conn.query(sql, function (err, rows, fields) {
+    
+    let temp = rows[0].temp;
+    let humi = rows[0].humi;
+    let soil = rows[0].soil;
+    let light = rows[0].light;
+    let comment = `오늘 날씨는 대체적으로 ${tem(temp)}고 ${hum(humi)}하며 ${lgt(light)}. 밭이 ${sol(soil)}..^^`
+    let send = {
+        temp,
+        humi,
+        soil,
+        light,
+        comment
+    }
+    
+    if(err){ conn.end(); res.send(err);}
+    else{
+      conn.end();
+      res.send(send);
+    } 
+  });
 }
 
 function sendAvgValue(res,fnumber){
@@ -112,12 +117,16 @@ function sendAvgValue(res,fnumber){
               `SELECT dateTable.date, IFNULL(sensorTable.soilavg,'0') as soilavg FROM dateTable LEFT JOIN (`+
               `SELECT date_format(date,'%Y-%m-%d') as date, avg(soil) as soilavg FROM Capstone.SENSOR WHERE fid=${fnumber} GROUP BY date HAVING max(date) > (SELECT DATE_SUB(${setDate},INTERVAL 7 DAY))`+
               `) as sensorTable ON dateTable.date = sensorTable.date`;      
-  conn.query(sql, function (err, rows, fields) {
-    if(err) res.send(err);
-    else{
-      res.send(rows);
+  
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
+    conn.query(sql, function (err, rows, fields) {
+      if(err) {conn.end(); res.send(err);}
+      else{
+        conn.end();
+        res.send(rows);
       } 
-  });
+    });
 }
 
 function tem(value){

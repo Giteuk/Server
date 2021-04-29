@@ -1,9 +1,6 @@
 var express = require('express');
 var request = require('request');
 var router = express.Router();
-//var db_config = require('../secret/database.js');
-//var conn = db_config.init();
-//db_config.connect(conn);
 
 //대구 기준
 const options = {

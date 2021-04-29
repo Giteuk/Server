@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var db_config = require('../secret/database.js');
+var db_info = require('../secret/database.js');
+var mysql = require('mysql');
 const nodemailer = require('nodemailer');
 const mailerInfo = require('../secret/email.js');
-var conn = db_config.init();
 
 // 키 값 만들기 
 router.post('/newBie', function(req, res, next) {
@@ -23,12 +23,26 @@ router.post('/newBie', function(req, res, next) {
 
     if(req.body.email)
       sendEmail(req.body.email, key).catch(console.error);
-    conn.query(sql, function (err, rows, fields) {
-        if(err) res.send(err);
-        else{
-          res.send(key);
-        } 
-    });
+
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+
+    connection.query(sql, function (err, rows, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        res.send(key);
+      } 
+  });
+    
   }catch(err){
     res.send(err);
   }
@@ -71,4 +85,30 @@ const sendEmail  = async (userEmail, key) => {
   console.log('Message sent: %s', info.messageId);
 }
 
+// 모든 유저들의 아이디와 이름 전송
+router.get('/allMemberInfo', function(req, res, next) {
+  try{
+    var sql = `SELECT id as UserIdent, UserId, UserName FROM USERS;`; 
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    connection.query(sql, function (err, rows, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        res.send(rows);
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+});
 module.exports = router;
