@@ -111,4 +111,39 @@ router.get('/allMemberInfo', function(req, res, next) {
     res.send(err);
   }
 });
+
+// 모든 밭 별명 정보
+router.get('/allFarmInfo', (req, res, next)=>{
+  try{
+    var sql = `SELECT id as FarmId, FarmName FROM FARM;`; 
+    let conn = mysql.createConnection(db_info);
+    conn.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    conn.query(sql, function (err, rows, fields) {
+      if(err){
+        conn.end();
+        res.send(err);
+      }
+      else{
+        conn.end();
+        res.send(rows);
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+})
+
+// // 
+// router.route('/eachFarm')
+//   .get((req, res, next)=>{
+
+//   })
+
+
 module.exports = router;
