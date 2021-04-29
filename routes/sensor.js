@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db_config = require('../secret/database.js');
-var conn = db_config.init();
-db_config.connect(conn);
+// var conn = db_config.init();
 
 /*Arduino*/
 router.get('/:field/:tem/:hum/:soil/:lig', function(req, res, next) {

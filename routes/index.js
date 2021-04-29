@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db_config = require('../secret/database.js');
-var conn = db_config.init();
-db_config.connect(conn);
+// var conn = db_config.init();
 
 /* 로그인 한 유저 정보 */
 router.get('/:userId', function(req, res, next) {

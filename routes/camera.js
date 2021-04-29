@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db_config = require('../secret/database.js');
-var conn = db_config.init();
-db_config.connect(conn);
+// var conn = db_config.init();
 
 /* GET home page. */
 router.get('/:Farmid', function(req, res, next) {
