@@ -220,4 +220,31 @@ router.route('/eachUser')
     }
   })
 
+// 유저 비밀번호 초기화
+router.get('/resetPw', function(req, res, next) {
+  try{
+    var sql = `UPDATE USERS SET UserPw = '0000' WHERE id = ${req.query.UserIdent};`; 
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    connection.query(sql, function (err, rows, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        res.send("초기화완료");
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+});
+
 module.exports = router;
