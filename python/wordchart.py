@@ -34,6 +34,7 @@ def main():
         count = tag['count']
         open_output_file.write('{} {}\n'.format(noun, count))
     open_output_file.close()
+    print('done')
  
  
 if __name__ == '__main__':
