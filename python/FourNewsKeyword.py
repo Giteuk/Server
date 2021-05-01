@@ -117,10 +117,11 @@ def Nongup_get_text(URL, output_file):
 '''======================================================'''
 
 def main():
-    keyword = "농사"
-    page_num = int("10")
-    output_file_name = "four_article.txt"
+    keyword = "딸기"
+    page_num = int("3")
+    output_file_name = "./python/four_article.txt"
     output_file = open(output_file_name, 'w',encoding='UTF-8')
+  
 
     
     #동아일보 크롤링
@@ -144,6 +145,7 @@ def main():
 
     
     output_file.close()
+    print("다함")
     
 
 if __name__ == '__main__':
