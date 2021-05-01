@@ -117,8 +117,8 @@ def Nongup_get_text(URL, output_file):
 '''======================================================'''
 
 def main():
-    keyword = "감자"
-    page_num = int("3")
+    keyword = "농사"
+    page_num = int("10")
     output_file_name = "./python/four_article.txt"
     output_file = open(output_file_name, 'w',encoding='UTF-8')
   

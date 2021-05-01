@@ -41,19 +41,20 @@ app.use(function(req, res, next) {
 });
 
 
- //test------------------------
+ //test----------------------------------
+ /*
  var schedule = require('node-schedule'); // cron style 작업 
  var j = schedule.scheduleJob('10 26 22 * * *', function(){ //매일밤 10시 26분10초에 시행
-   console.log('30초 될때마다 작업');
+   console.log('매일밤 10시 26분10초에 시행');
    //자식 스레드 생성
    const spawn = require('child_process').spawn;
    //3사 크롤링 하는 파이썬 동작 
-      const result1 = spawn('python', ['./python/FourNewsKeyword.py']); 
-      result1.stdout.on('data', function(data) { console.log(data.toString()); }); 
-      result1.stderr.on('data', function(data) { console.log(data.toString()); });
+   const result1 = spawn('python', ['./python/FourNewsKeyword.py']); 
+   result1.stdout.on('data', function(data) { console.log(data.toString()); }); 
+   result1.stderr.on('data', function(data) { console.log(data.toString()); });
  });
  var m = schedule.scheduleJob('10 27 23 * * *', function(){ //매일밤 11시 27분 10초에 시행
-  console.log('3분후초 될때마다 작업');
+  console.log('매일밤 11시 27분 10초에 시행');
   //자식 스레드 생성
   const spawn = require('child_process').spawn;
   //크롤링 정보 키워드 차트
@@ -61,7 +62,7 @@ app.use(function(req, res, next) {
   result2.stdout.on('data', function(data) { console.log(data.toString()); }); 
   result2.stderr.on('data', function(data) { console.log(data.toString()); });
 });
- 
+*/
  //----------------------------------------
 
 
