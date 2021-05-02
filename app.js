@@ -10,7 +10,8 @@ var cameraRouter=require('./routes/camera');
 var wheatherRouter=require('./routes/wheather');
 var manageRouter = require('./routes/manage');
 var forumRouter = require('./routes/forum');
-var sensorRouter = require('./routes/sensor')
+var sensorRouter = require('./routes/sensor');
+var diaryRouter = require('./routes/diary');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use('/wheather',wheatherRouter);
 app.use('/manage', manageRouter);
 app.use('/forum', forumRouter);
 app.use('/sensor', sensorRouter);
+app.use('/diary', diaryRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
