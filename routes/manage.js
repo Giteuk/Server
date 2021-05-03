@@ -115,7 +115,7 @@ router.get('/allMemberInfo', function(req, res, next) {
 // 모든 밭 별명 정보
 router.get('/allFarmInfo', (req, res, next)=>{
   try{
-    var sql = `SELECT id as FarmId, FarmName FROM FARM;`; 
+    var sql = `SELECT id as FarmID, FarmName FROM FARM;`; 
     let conn = mysql.createConnection(db_info);
     conn.connect(
       function(err) {
@@ -240,6 +240,60 @@ router.get('/resetPw', function(req, res, next) {
       else{
         connection.end();
         res.send("초기화완료");
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+});
+
+// 사용자가 사용하지 않는 밭의 리스트
+router.get('/notUsingFarm', function(req, res, next) {
+  try{
+    var sql = `
+      SELECT id, FarmName, utfUserId, COUNT(id) as cnt
+      FROM FARM f 
+        JOIN(
+          select utf.UserId as utfUserId, 
+            SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ', ', numbers.n), ', ', -1) FarmNum 
+          from
+            (select 1 n union all
+            select 2 union all select 3 union all
+            select 4 union all select 5) numbers INNER JOIN USER_TO_FARM utf
+            on CHAR_LENGTH(utf.FarmNum)
+              -CHAR_LENGTH(REPLACE(utf.FarmNum, ',', ''))>=numbers.n-1
+        ) t1 ON (f.id NOT LIKE t1.FarmNum)
+      WHERE utfUserId = ${req.query.UserIdent}
+      GROUP BY id
+      ORDER BY cnt DESC
+    ;`; 
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    connection.query(sql, function (err, result, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        let farmInfo = {
+          FarmID : [],
+          FarmName : []
+        }
+        let big = result[0].cnt;
+        for(let i=0; i<result.length; i++){
+          if(big == result[i].cnt){
+            farmInfo.FarmID.push(result[i].id);
+            farmInfo.FarmName.push(result[i].FarmName);
+          }
+        }
+        res.json(farmInfo);
       } 
   });
   }catch(err){
