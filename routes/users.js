@@ -99,4 +99,27 @@ router.post('/login', function(req, res, next){
   }
 })
 
+// 회원정보 수정
+router.patch('/info', function(req, res, next){
+  try{
+    let sql = `
+      UPDATE USERS 
+      SET UserPw = '${req.body.pw}', UserName = '${req.body.name}', UserPhoneNum = '${req.body.phone}', UserEmail = '${req.body.email}'
+      WHERE id = ${req.query.UserIdent}
+    ;`;
+    let conn = mysql.createConnection(db_info);
+    conn.connect();
+    conn.query(sql, function(err, result, fields){
+      conn.end();
+      if(err) res.send(err);
+      else{
+        res.send("수정완료");
+      }
+    })
+  }catch(err){
+    res.send(err);
+  }
+})
+
+
 module.exports = router;

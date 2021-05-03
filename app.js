@@ -10,6 +10,7 @@ var cameraRouter=require('./routes/camera');
 var wheatherRouter=require('./routes/wheather');
 var manageRouter = require('./routes/manage');
 var forumRouter = require('./routes/forum');
+var diaryRouter = require('./routes/diary');
 var sensorRouter = require('./routes/sensor')
 var newInfoRouter = require('./routes/newInfo');
 
@@ -32,6 +33,7 @@ app.use('/newInfo',newInfoRouter);
 app.use('/manage', manageRouter);
 app.use('/forum', forumRouter);
 app.use('/sensor', sensorRouter);
+app.use('/diary', diaryRouter);
 app.use('/', indexRouter);
 
 

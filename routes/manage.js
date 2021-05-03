@@ -111,4 +111,140 @@ router.get('/allMemberInfo', function(req, res, next) {
     res.send(err);
   }
 });
+
+// 모든 밭 별명 정보
+router.get('/allFarmInfo', (req, res, next)=>{
+  try{
+    var sql = `SELECT id as FarmId, FarmName FROM FARM;`; 
+    let conn = mysql.createConnection(db_info);
+    conn.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    conn.query(sql, function (err, rows, fields) {
+      if(err){
+        conn.end();
+        res.send(err);
+      }
+      else{
+        conn.end();
+        res.send(rows);
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+})
+
+// 밭 별 관리
+router.route('/eachFarm')
+  .get((req, res, next)=>{ // 밭 별 사용자 id&이름
+    try{
+      var sql = `SELECT u.id as UserIdent, u.UserId, u.UserName 
+                FROM USER_TO_FARM utf LEFT JOIN USERS u ON(utf.UserId = u.id)
+                WHERE FarmNum LIKE '%${req.query.FarmId}%';`; 
+      let conn = mysql.createConnection(db_info);
+      conn.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
+      
+      conn.query(sql, function (err, rows, fields) {
+        if(err){
+          conn.end();
+          res.send(err);
+        }
+        else{
+          conn.end();
+          res.send(rows);
+        } 
+    });
+    }catch(err){
+      res.send(err);
+    }
+  })
+
+
+// 유저 별 관리
+router.route('/eachUser')
+  .get((req, res, next)=>{ // 사용자 정보 + 소유 밭 별명
+    try{
+      var sql = `
+        SELECT u.id, u.UserId, u.UserName, u.UserPhoneNum, f.id as FarmId, f.FarmName as FarmName 
+        FROM USERS u 
+          JOIN (
+            select utf.id as utfID, utf.UserId as utfUserId,
+              SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ', ', numbers.n), ', ', -1) FarmNum 
+            from
+              (select 1 n union all
+              select 2 union all select 3 union all
+              select 4 union all select 5) numbers INNER JOIN USER_TO_FARM utf
+              on CHAR_LENGTH(utf.FarmNum)
+                -CHAR_LENGTH(REPLACE(utf.FarmNum, ',', ''))>=numbers.n-1
+          ) t1 ON (u.id = t1.utfUserId) 
+        JOIN FARM f ON (t1.FarmNum = f.id)
+        WHERE u.id = ${req.query.UserIdent}
+      ;`; 
+      let conn = mysql.createConnection(db_info);
+      conn.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
+      conn.query(sql, function (err, result, fields) {
+        if(err){ conn.end(); res.send(err);}
+        else{
+          let userInfo = {
+            FarmID : [],
+            FarmName : [],
+            UserIdent : result[0].id,
+            UserName : result[0].UserName,
+            UserPhoneNum : result[0].UserPhoneNum
+          }
+          for(let i=0; i<result.length; i++){
+            userInfo.FarmID.push(result[i].FarmId);
+            userInfo.FarmName.push(result[i].FarmName);
+          }
+          conn.end();
+          res.json(userInfo);
+        } 
+      });
+    }catch(err){
+      res.send(err);
+    }
+  })
+
+// 유저 비밀번호 초기화
+router.get('/resetPw', function(req, res, next) {
+  try{
+    var sql = `UPDATE USERS SET UserPw = '0000' WHERE id = ${req.query.UserIdent};`; 
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    connection.query(sql, function (err, rows, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        res.send("초기화완료");
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+});
+
 module.exports = router;
