@@ -379,4 +379,35 @@ router.get('/notUsingFarm', function(req, res, next) {
   }
 });
 
+// 해당 밭을 사용하고 있지 않은 사용자 리스트
+router.get('/notUsingUser', function(req, res, next) {
+  try{
+    var sql = `
+      SELECT u.id as UserIdent, u.UserId, UserName
+      FROM USERS u LEFT JOIN USER_TO_FARM utf ON u.id = utf.UserId
+      WHERE utf.FarmNum NOT LIKE '%${req.query.FarmNum}%' AND utf.FarmNum NOT LIKE '-1'
+    ;`; 
+    let connection = mysql.createConnection(db_info);
+    connection.connect(
+      function(err) {
+          if(err) console.error('mysql connection error : ' + err);
+          else{console.log('mysql is connected successfully!');}
+      }
+    );
+    
+    connection.query(sql, function (err, result, fields) {
+      if(err){
+        connection.end();
+        res.send(err);
+      }
+      else{
+        connection.end();
+        res.json(result);
+      } 
+  });
+  }catch(err){
+    res.send(err);
+  }
+});
+
 module.exports = router;
