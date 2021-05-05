@@ -172,14 +172,42 @@ router.route('/eachFarm')
       res.send(err);
     }
   })
-  .post((req, res, next)=>{ // 사용하는 밭 추가
+  .post((req, res, next)=>{ // 밭 별 사용자 추가
     try{
+      let conn = mysql.createConnection(db_info);
+      conn.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
       
+      for(let i=0; i<req.body.inputUser.length; i++){
+        var sql1 = `SELECT FarmNum FROM USER_TO_FARM WHERE UserId = ${req.body.inputUser[i]};`;
+        conn.query(sql1, function(err, result, fields){
+          let strArr = result[0].FarmNum.split(',');
+          strArr.push(req.query.FarmId);
+          strArr.sort();
+          if(err) {conn.end(); res.send(err);}
+
+          var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${strArr}' WHERE UserId = ${req.body.inputUser[i]};`; 
+          conn.query(sql2, function (err, rows, fields) {
+            if(err){
+              conn.end();
+              res.send(err);
+            }
+            if(i == req.body.inputUser.length-1){
+              conn.end();
+              res.send('추가완료');
+            }
+          });
+        })
+      }
     }catch(err){
       res.send(err);
     }
   })
-  .delete((req, res, next)=>{ // 사용하는 밭 삭제
+  .delete((req, res, next)=>{ // 밭 별 사용자 삭제
     try{
       
     }catch(err){
@@ -259,7 +287,6 @@ router.route('/eachUser')
           strArr.sort();
           
           var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${strArr}' WHERE UserId = ${req.query.UserIdent};`; 
-          console.log(sql2);
           conn.query(sql2, function(err, result, fields){
             if(err){ conn.end(); res.send(err);}
             else{
