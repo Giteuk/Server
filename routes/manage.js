@@ -85,10 +85,14 @@ const sendEmail  = async (userEmail, key) => {
   console.log('Message sent: %s', info.messageId);
 }
 
-// 모든 유저들의 아이디와 이름 전송
+// (관리자 제외)모든 유저들의 아이디와 이름 전송
 router.get('/allMemberInfo', function(req, res, next) {
   try{
-    var sql = `SELECT id as UserIdent, UserId, UserName FROM USERS;`; 
+    var sql = `
+      SELECT u.id as UserIdent, u.UserId, UserName 
+      FROM USERS u LEFT JOIN USER_TO_FARM utf ON u.id = utf.UserId
+      WHERE utf.FarmNum NOT LIKE '-1'
+    ;`; 
     let connection = mysql.createConnection(db_info);
     connection.connect(
       function(err) {
