@@ -207,13 +207,6 @@ router.route('/eachFarm')
       res.send(err);
     }
   })
-  .delete((req, res, next)=>{ // 밭 별 사용자 삭제
-    try{
-      
-    }catch(err){
-      res.send(err);
-    }
-  })
 
 
 // 유저 별 관리
