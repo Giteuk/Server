@@ -168,6 +168,37 @@ router.route('/eachFarm')
       res.send(err);
     }
   })
+  .post((req, res, next)=>{ // 사용하는 밭 추가
+    try{
+      let sql1 = `SELECT FarmNum FROM USER_TO_FARM WHERE UserId = ${req.query.UserIdent};`
+      let conn = mysql.createConnection(db_info);
+      conn.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
+      
+      conn.query(sql1, function (err, rows, fields) {
+        if(err){
+          conn.end();
+          res.send(err);
+        }
+        else{
+          var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${rows[0].FarmNum+', '+req.body.inputFarm}' WHERE UserId = ${req.query.UserIdent};`; 
+          conn.query(sql2, function(err, result, fields){
+            if(err){ conn.end(); res.send(err);}
+            else{
+              conn.end();
+              res.send("추가완료");
+            }
+          });
+        } 
+    });
+    }catch(err){
+      res.send(err);
+    }
+  })
 
 
 // 유저 별 관리
