@@ -44,7 +44,7 @@ router.get('/:userId', function(req, res, next) {
           FROM USERS u 
             JOIN (
               select utf.id as utfID, utf.UserId as utfUserId,
-                SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ', ', numbers.n), ', ', -1) FarmNum 
+                SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ',', numbers.n), ',', -1) FarmNum 
               from
                 (select 1 n union all
                 select 2 union all select 3 union all

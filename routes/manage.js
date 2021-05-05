@@ -16,7 +16,7 @@ router.post('/newBie', function(req, res, next) {
     }else{
       for(var i=0; i<=req.body.farm.length-1; i++){
         farmId += req.body.farm[i];
-        if( i != req.body.farm.length-1) farmId += ', ';
+        if( i != req.body.farm.length-1) farmId += ',';
       }
     }
     var sql = `INSERT INTO Capstone.KEY(KeyValue, FarmNum) VALUES ( '${key}', '${farmId}');`; 
@@ -185,12 +185,55 @@ router.route('/eachFarm')
           res.send(err);
         }
         else{
-          var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${rows[0].FarmNum+', '+req.body.inputFarm}' WHERE UserId = ${req.query.UserIdent};`; 
+          let strArr = rows[0].FarmNum.split(',');
+          strArr.push(req.body.inputFarm);
+          strArr.sort();
+          
+          var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${strArr}' WHERE UserId = ${req.query.UserIdent};`; 
+          console.log(sql2);
           conn.query(sql2, function(err, result, fields){
             if(err){ conn.end(); res.send(err);}
             else{
               conn.end();
               res.send("추가완료");
+            }
+          });
+        } 
+    });
+    }catch(err){
+      res.send(err);
+    }
+  })
+  .delete((req, res, next)=>{ // 사용하는 밭 삭제
+    try{
+      let sql1 = `SELECT FarmNum FROM USER_TO_FARM WHERE UserId = ${req.query.UserIdent};`
+      let conn = mysql.createConnection(db_info);
+      conn.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
+      
+      conn.query(sql1, function (err, rows, fields) {
+        if(err){
+          conn.end();
+          res.send(err);
+        }
+        else{
+          let strArr = rows[0].FarmNum.split(',');
+          let newArr = [];
+          for(let i=0; i<strArr.length; i++){
+            if(strArr[i] == req.body.inputFarm) continue;
+            else newArr.push(strArr[i]);
+          }
+
+          var sql2 = `UPDATE USER_TO_FARM SET FarmNum = '${newArr}' WHERE UserId = ${req.query.UserIdent};`; 
+          conn.query(sql2, function(err, result, fields){
+            if(err){ conn.end(); res.send(err);}
+            else{
+              conn.end();
+              res.send("삭제완료");
             }
           });
         } 
@@ -210,7 +253,7 @@ router.route('/eachUser')
         FROM USERS u 
           JOIN (
             select utf.id as utfID, utf.UserId as utfUserId,
-              SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ', ', numbers.n), ', ', -1) FarmNum 
+              SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ',', numbers.n), ',', -1) FarmNum 
             from
               (select 1 n union all
               select 2 union all select 3 union all
@@ -286,7 +329,7 @@ router.get('/notUsingFarm', function(req, res, next) {
       FROM FARM f 
         JOIN(
           select utf.UserId as utfUserId, 
-            SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ', ', numbers.n), ', ', -1) FarmNum 
+            SUBSTRING_INDEX(SUBSTRING_INDEX(utf.FarmNum , ',', numbers.n), ',', -1) FarmNum 
           from
             (select 1 n union all
             select 2 union all select 3 union all
