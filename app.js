@@ -41,18 +41,27 @@ app.use(function(req, res, next) {
 });
 
 
- //test----------------------------------
+ //python----------------------------------
  /*
  var schedule = require('node-schedule'); // cron style 작업 
- var j = schedule.scheduleJob('10 26 22 * * *', function(){ //매일밤 10시 26분10초에 시행
-   console.log('매일밤 10시 26분10초에 시행');
+ var j = schedule.scheduleJob('10 10 22 * * *', function(){ //매일밤 10시 26분10초에 시행
+   console.log('매일밤 10시 10분10초에 시행');
    //자식 스레드 생성
    const spawn = require('child_process').spawn;
-   //3사 크롤링 하는 파이썬 동작 
-   const result1 = spawn('python', ['./python/FourNewsKeyword.py']); 
+   //4사 크롤링 하는 파이썬 동작 '농사'
+   const result1 = spawn('python', ['./python/KeywordSearch_nongsa_1.py']); 
    result1.stdout.on('data', function(data) { console.log(data.toString()); }); 
    result1.stderr.on('data', function(data) { console.log(data.toString()); });
+   //4사 크롤링 하는 파이썬 동작 '주말농장'
+   const result2 = spawn('python', ['./python/KeywordSearch_weekfarm_2.py']); 
+   result2.stdout.on('data', function(data) { console.log(data.toString()); }); 
+   result2.stderr.on('data', function(data) { console.log(data.toString()); });
+   //4사 크롤링 하는 파이썬 동작 '파종'
+   const result3 = spawn('python', ['./python/KeywordSearch_pajong_3.py']); 
+   result3.stdout.on('data', function(data) { console.log(data.toString()); }); 
+   result3.stderr.on('data', function(data) { console.log(data.toString()); });
  });
+
  var m = schedule.scheduleJob('10 27 23 * * *', function(){ //매일밤 11시 27분 10초에 시행
   console.log('매일밤 11시 27분 10초에 시행');
   //자식 스레드 생성
@@ -61,8 +70,8 @@ app.use(function(req, res, next) {
   const result2 = spawn('python', ['./python/wordchart.py']); 
   result2.stdout.on('data', function(data) { console.log(data.toString()); }); 
   result2.stderr.on('data', function(data) { console.log(data.toString()); });
-});
-*/
+});*/
+
  //----------------------------------------
 
 
