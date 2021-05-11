@@ -12,7 +12,7 @@ var manageRouter = require('./routes/manage');
 var forumRouter = require('./routes/forum');
 var diaryRouter = require('./routes/diary');
 var sensorRouter = require('./routes/sensor')
-var newInfoRouter = require('./routes/newInfo');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -29,11 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 app.use('/camera',cameraRouter);
 app.use('/wheather',wheatherRouter);
-app.use('/newInfo',newInfoRouter);
 app.use('/manage', manageRouter);
 app.use('/forum', forumRouter);
 app.use('/sensor', sensorRouter);
 app.use('/diary', diaryRouter);
+app.use('/api', apiRouter);
 app.use('/', indexRouter);
 
 
