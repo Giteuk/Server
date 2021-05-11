@@ -21,9 +21,9 @@ def get_tags(text, ntags=50):
  
 def main():
     
-    text_file_name = "four_article.txt"
-    noun_count = int("200")
-    output_file_name = "four_article_result_word.txt"
+    text_file_name = "./python/four_article.txt"
+    noun_count = int("400")
+    output_file_name = "./python/four_article_result_word.txt"
     open_text_file = open(text_file_name, 'r',encoding='UTF-8')
     text = open_text_file.read()
     tags = get_tags(text, noun_count)
@@ -32,7 +32,7 @@ def main():
     for tag in tags:
         noun = tag['tag']
         count = tag['count']
-        open_output_file.write('{} {}\n'.format(noun, count))
+        open_output_file.write('{}\n'.format(noun))
     open_output_file.close()
     print('done')
  
