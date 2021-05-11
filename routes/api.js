@@ -226,7 +226,6 @@ function videoInfo(cropName){
         }
 
         url=url.substr(0, url.length-1);
-        console.log(url)
         request.get(url, (err,res,body) =>{
             if(err){
                 console.log(`err => ${err}`)
