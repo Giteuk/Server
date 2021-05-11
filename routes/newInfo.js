@@ -40,29 +40,29 @@ function getRank()
   //작물이름 있는대로 작물 코드 부여
   switch(true)
   {
-      case (countnum>=3):
+      case (countnum>=3)://작물3개이상 나온경우
         crolResult[0]=cropscode[count[0]];
         crolResult[1]=cropscode[count[1]];
         crolResult[2]=cropscode[count[2]];
         break;
-      case (countnum===2):
+      case (countnum===2)://작물 2개만 나온경우
         crolResult[0]=cropscode[count[0]];
         crolResult[1]=cropscode[count[1]];
         crolResult[2]=cropscode[Math.floor(Math.random() * 27)];//난수 생성
         break;
-      case (countnum===1):
+      case (countnum===1)://작물 1개만 나온경우
         crolResult[0]=cropscode[count[0]];
         crolResult[1]=cropscode[Math.floor(Math.random() * 13)+11];//난수 생성 11~25
         crolResult[2]=cropscode[Math.floor(Math.random() * 21)+240];//난수 생성 241~261
-      default:
+      default://작물 0개인경우
         crolResult[0]=cropscode[Math.floor(Math.random() * 12)];//0~11
         crolResult[1]=cropscode[Math.floor(Math.random() * 13)+11];//난수 생성 11~25
         crolResult[2]=cropscode[Math.floor(Math.random() * 21)+240];//난수 생성 241~261
         break;
   }
-  for(var o=0;o<3;o++){
+  /*for(var o=0;o<3;o++){
     console.log(crolResult[o]);
-  }
+  }*/
   return crolResult;
 }
 
