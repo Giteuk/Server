@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const request = require('request');
+var API = require('../secret/apiKEY.js');
 //install
 const convert = require('xml-js');
 var fs = require('fs');
@@ -215,7 +216,7 @@ function videoInfo(cropName){
         let optionParams={
             q: encodeURI(cropName+"레시피"),
             part: "snippet",
-            key: "AIzaSyDlS9iZfFpu50AlIX-DY7goRnOCLUE54Nk",
+            key: API.GOOGLE_API_KEY,
             maxResults: 1
          };
         
@@ -225,6 +226,7 @@ function videoInfo(cropName){
         }
 
         url=url.substr(0, url.length-1);
+        console.log(url)
         request.get(url, (err,res,body) =>{
             if(err){
                 console.log(`err => ${err}`)
