@@ -297,7 +297,7 @@ async function varietyInfo(){
 
     Yvideo = await videoInfo(vInfoImage[0]);
 
-    let resultArray = [vInfoImage[0],vInfoImage_nd[0],vInfoImage_rd[0],vInfoText,vInfoImage[1],vInfoInsect,download,"https://www.youtube.com/watch?v="+Yvideo]
+    let resultArray = [vInfoImage[0],vInfoImage_nd[0],vInfoImage_rd[0],vInfoText,vInfoImage[1],vInfoInsect,download,Yvideo]
     return resultArray;
 }
 
