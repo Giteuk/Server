@@ -394,15 +394,15 @@ router.get('/notUsingFarm', function(req, res, next) {
       }
       else{
         connection.end();
-        let farmInfo = {
-          FarmID : [],
-          FarmName : []
-        }
+        let farmInfo = new Array();
+
         let big = result[0].cnt;
         for(let i=0; i<result.length; i++){
           if(big == result[i].cnt){
-            farmInfo.FarmID.push(result[i].id);
-            farmInfo.FarmName.push(result[i].FarmName);
+            let json = new Object();
+            json.FarmID = result[i].id;
+            json.FarmName = result[i].FarmName;
+            farmInfo.push(json);
           }
         }
         res.json(farmInfo);
