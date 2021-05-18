@@ -405,7 +405,8 @@ router.get('/notUsingFarm', function(req, res, next) {
             farmInfo.push(json);
           }
         }
-        res.json(farmInfo);
+        if(farmInfo.length == 3) res.json({});
+        else res.json(farmInfo);
       } 
   });
   }catch(err){

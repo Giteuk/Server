@@ -20,10 +20,10 @@ router.get('/:userId', function(req, res, next) {
         let sqlAdmin = `SELECT * FROM FARM f;`;
         conn.query(sqlAdmin, function(err, result2, fields){
           let userInfo = {
-            farmCnt : result2.length,
+            farmCnt : -1,
             farmID : [],
             farmName : [],
-            UserIdent : result[0].id,
+            UserIdent : result[0].UserIdent,
             UserName : result[0].UserName,
             UserNickName : result[0].UserNickName,
             UserPhoneNum : result[0].UserPhoneNum,
