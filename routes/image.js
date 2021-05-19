@@ -13,16 +13,37 @@ const storage = multer.diskStorage({
 const upload = multer({ storage : storage })
 
 router.post('/', upload.single('image'), (req, res, next) => {
-  console.log(req.file);
   const imagePath = req.file.path;
   console.log(imagePath);
   if(imagePath == undefined){
     console.log("이미지가 존재하지 않습니다.");
     res.send("이미지가 존재하지 않습니다.");
   }else{
-    console.log("이미지 전송 성공");
-    next();
-    res.send("전송성공");
+    try{
+      var sql = `INSERT INTO FORUM(UserId, Title, ImageName, UserNickName, Content, CreatedDate) 
+              VALUES (${req.body.userIdent}, '${req.body.title}', '${req.file.originalname}', '${req.body.nickname}', '${req.body.content}', now());`; 
+      let connection = mysql.createConnection(db_info);
+      connection.connect(
+        function(err) {
+            if(err) console.error('mysql connection error : ' + err);
+            else{console.log('mysql is connected successfully!');}
+        }
+      );
+      
+      connection.query(sql, function (err, rows, fields) {
+        if(err){
+          connection.end();
+          res.send(err);
+        }
+        else{
+          connection.end();
+          console.log("이미지 전송 성공");
+          res.send("이미지 전송 성공");
+        } 
+    });
+    }catch(err){
+      res.send(err);
+    }
   }
 });
 
