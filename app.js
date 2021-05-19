@@ -11,8 +11,9 @@ var wheatherRouter=require('./routes/wheather');
 var manageRouter = require('./routes/manage');
 var forumRouter = require('./routes/forum');
 var diaryRouter = require('./routes/diary');
-var sensorRouter = require('./routes/sensor')
+var sensorRouter = require('./routes/sensor');
 var apiRouter = require('./routes/api');
+var imageRouter = require('./routes/image');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/image', imageRouter);
 app.use('/users', usersRouter);
 app.use('/camera',cameraRouter);
 app.use('/wheather',wheatherRouter);
