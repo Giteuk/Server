@@ -7,20 +7,17 @@ const convert = require('xml-js');
 var fs = require('fs');
 
 
-const SITE1 = `http://api.nongsaro.go.kr/service/varietyInfo/varietyList?apiKey=20210324IW0R2O5RG2EZTVL69XSV8Q`
+const SITE1 = `http://api.nongsaro.go.kr/service/varietyInfo/varietyList?apiKey=20210324IW0R2O5RG2EZTVL69XSV8Q&numOfRows=50`
 const SITE2 = `http://ncpms.rda.go.kr/npmsAPI/service?apiKey=2021ef3c4e2a6a7d04d82eaba5d8c34d55d6&displayCount=50&startPoint=1&serviceType=AA001`
 const SITE4 = `http://api.nongsaro.go.kr/service/weekFarmInfo/weekFarmInfoList?apiKey=20210324IW0R2O5RG2EZTVL69XSV8Q`
 
 //send//
 router.get(`/variety`, function(req, res, next) {
-    //let cropCode=req.query.id;
-
-    //let cropCode = getRank()[1].replace(/\r/,'')
     varietyInfo().then(ans=> {
         try{
             let value;
             value = ans
-            res.send(value);
+            res.send(value); //Key 없는 JSON
         }catch(err){
           res.send(err);
         }
@@ -88,7 +85,9 @@ function vInfo(cropCode,category){
                     let result = body
                     let xmlToJson = convert.xml2json(result, {compact: true, spaces: 4});
                     let data,i;
-                    for(i=0; JSON.parse(xmlToJson).response.body.items.item[i].prdlstCtgCode['_cdata']!==cropCode ;i++);
+                    for(i=0; JSON.parse(xmlToJson).response.body.items.item[i].prdlstCtgCode['_cdata']!==cropCode && i< JSON.parse(xmlToJson).response.body.items.numOfRows['_cdata'];i++);
+                    if(i==JSON.parse(xmlToJson).response.body.items.numOfRows['_cdata'])
+                        data=JSON.parse(xmlToJson).response.body.items.item[1].mainChartrInfo['_cdata'];
                     data=JSON.parse(xmlToJson).response.body.items.item[i].mainChartrInfo['_cdata'];
                     resolves(data)
                 }
@@ -267,12 +266,11 @@ async function varietyInfo(){
     let vInfoInsect;
     let download;
     let Yvideo;
-    
-    let cropCode = getRank()[0].replace(/\r/,'')
-    
-    let cropCode_nd = getRank()[1].replace(/\r/,'')
-    let cropCode_rd = getRank()[2].replace(/\r/,'')
-    
+
+    let cropCode = "FC020201"
+    let cropCode_nd = "FC050501"
+    let cropCode_rd = "FT020608"
+
     let category=category_kind(cropCode)
     
     let category_nd=category_kind(cropCode_nd)
