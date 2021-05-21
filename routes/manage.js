@@ -313,7 +313,7 @@ router.route('/eachUser')
           let strArr = rows[0].FarmNum.split(',');
           let newArr = [];
           for(let i=0; i<strArr.length; i++){
-            if(strArr[i] == req.body.inputFarm) continue;
+            if(strArr[i] == req.query.InputFarm) continue;
             else newArr.push(strArr[i]);
           }
 
@@ -405,7 +405,8 @@ router.get('/notUsingFarm', function(req, res, next) {
             farmInfo.push(json);
           }
         }
-        res.json(farmInfo);
+        if(farmInfo.length == 3) res.json({});
+        else res.json(farmInfo);
       } 
   });
   }catch(err){
