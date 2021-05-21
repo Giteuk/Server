@@ -46,8 +46,8 @@ app.use(function(req, res, next) {
  //python----------------------------------
  
  var schedule = require('node-schedule'); // cron style 작업 
- var j = schedule.scheduleJob('10 10 22 * * *', function(){ //매일밤 10시 26분10초에 시행
-   console.log('매일밤 10시 10분10초에 시행');
+ var j = schedule.scheduleJob('10 10 17 * * *', function(){ 
+   console.log('한국기준 매일밤 2시 10분10초에 시행');
    //자식 스레드 생성
    const spawn = require('child_process').spawn;
    //4사 크롤링 하는 파이썬 동작 '농사'
@@ -64,8 +64,8 @@ app.use(function(req, res, next) {
    result3.stderr.on('data', function(data) { console.log(data.toString()); });
  });
 
- var m = schedule.scheduleJob('10 09 2 * * *', function(){ //매일밤 11시 27분 10초에 시행
-  console.log('매일밤 11시 27분 10초에 시행');
+ var m = schedule.scheduleJob('10 24 18 * * *', function(){ 
+  console.log('한국기준 매일 밤 3시 27분 10초에 시행');
   //자식 스레드 생성
   const spawn = require('child_process').spawn;
   //크롤링 정보 키워드 차트
