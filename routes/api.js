@@ -267,9 +267,9 @@ async function varietyInfo(){
     let download;
     let Yvideo;
 
-    let cropCode = "FC020201"
-    let cropCode_nd = "FC050501"
-    let cropCode_rd = "FT020608"
+    let cropCode = getRank()[0].replace(/\r/,'')
+    let cropCode_nd = getRank()[1].replace(/\r/,'')
+    let cropCode_rd = getRank()[2].replace(/\r/,'')
 
     let category=category_kind(cropCode)
     
