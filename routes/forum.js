@@ -58,7 +58,7 @@ router.route('/:id')
   .get((req, res, next)=>{ // 세부 게시글 확인 
     try{
       let sql = `
-                SELECT id, Title, UserNickName, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, IFNULL(commentCnt, 0) as CommentCnt 
+                SELECT id, Title, UserNickName, Content, DATE_FORMAT(CreatedDate, '%Y-%m-%d %H:%i') as date, IFNULL(commentCnt, 0) as CommentCnt , ImageName
                 FROM FORUM f 
                   LEFT JOIN (
                     SELECT PostNum, COUNT(PostNum) as commentCnt 
