@@ -17,7 +17,7 @@ router.get(`/variety`, function(req, res, next) {
         try{
             let value;
             value = ans
-            res.send(value);
+            res.send(value); //Key 없는 JSON
         }catch(err){
           res.send(err);
         }
