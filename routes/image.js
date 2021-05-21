@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db_info = require('../secret/database.js');
 var mysql = require('mysql');
+var path = require('path');
 
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -46,5 +47,10 @@ router.post('/', upload.single('image'), (req, res, next) => {
     }
   }
 });
+
+router.get('/:image', (req, res, next)=>{
+  let reqPath = path.join(__dirname, '../uploads/');
+  res.sendFile(reqPath+`${req.params.image}`);
+})
 
 module.exports = router;
