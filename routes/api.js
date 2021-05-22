@@ -293,8 +293,8 @@ async function varietyInfo(){
 
     download= await magazineInfo()//주간 농사정보 다운로드 링크
 
-    Yvideo = await videoInfo(vInfoImage[0]);
-
+    //Yvideo = await videoInfo(vInfoImage[0]);
+    Yvideo = "xHLu8gFP3Fw";
     let resultArray = [vInfoImage[0],vInfoImage_nd[0],vInfoImage_rd[0],vInfoText,vInfoImage[1],vInfoInsect,download,Yvideo]
     return resultArray;
 }
