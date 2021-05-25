@@ -266,11 +266,15 @@ async function varietyInfo(){
     let vInfoInsect;
     let download;
     let Yvideo;
-
+/*
     let cropCode = getRank()[0].replace(/\r/,'')
     let cropCode_nd = getRank()[1].replace(/\r/,'')
     let cropCode_rd = getRank()[2].replace(/\r/,'')
-
+*/
+    let cropCode = "FC050501"
+    let cropCode_nd = "FC030302"
+    let cropCode_rd = "FT010602"
+    
     let category=category_kind(cropCode)
     
     let category_nd=category_kind(cropCode_nd)
@@ -294,7 +298,8 @@ async function varietyInfo(){
     download= await magazineInfo()//주간 농사정보 다운로드 링크
 
     //Yvideo = await videoInfo(vInfoImage[0]);
-    Yvideo = "xHLu8gFP3Fw";
+    Yvideo ="zu02vmfoBTg";
+
     let resultArray = [vInfoImage[0],vInfoImage_nd[0],vInfoImage_rd[0],vInfoText,vInfoImage[1],vInfoInsect,download,Yvideo]
     return resultArray;
 }
