@@ -48,7 +48,7 @@ router.post('/', upload.single('image'), (req, res, next) => {
   }
 });
 
-router.patch('/', upload.single('image'), (req, res, next) => {
+router.patch('/:id', upload.single('image'), (req, res, next) => {
   const imagePath = req.file.path;
   console.log(imagePath);
   if(imagePath == undefined){
@@ -56,7 +56,7 @@ router.patch('/', upload.single('image'), (req, res, next) => {
     res.send("이미지가 존재하지 않습니다.");
   }else{
     try{
-      var sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id=${req.params.id};`; 
+      var sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}', ImageName = '${req.file.originalname}' WHERE id=${req.params.id};`; 
       let connection = mysql.createConnection(db_info);
       connection.connect(
         function(err) {
