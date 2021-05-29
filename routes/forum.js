@@ -112,7 +112,7 @@ router.route('/:id')
   })
   .patch((req, res, next) => { // 게시글 수정
     try{
-      let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}' WHERE id=${req.params.id}`;
+      let sql = `UPDATE FORUM SET Title = '${req.body.title}', Content = '${req.body.content}', ImageName=null WHERE id=${req.params.id}`;
       let connection = mysql.createConnection(db_info);
       connection.connect();
       connection.query(sql, (err, result, fields)=>{
