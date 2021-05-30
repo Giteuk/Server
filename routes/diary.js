@@ -7,7 +7,7 @@ router.route('/')
   .get((req, res, next)=>{ // 일 별, 주 별(날짜 간) 일지 목록 
     try{
       var sql = `
-        SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d') as date
+        SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
         FROM DIARY d 
         WHERE UserId = ${req.query.userIdent} AND Date BETWEEN DATE_FORMAT('${req.query.startDate}', '%Y-%m-%d') AND DATE_FORMAT(DATE_ADD('${req.query.endDate}', INTERVAL +1 DAY),'%Y-%m-%d')
       ;`; 
@@ -89,7 +89,7 @@ router.route('/')
 router.get('/month', function(req, res, next) {
   try{
     var sql = `
-      SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d') as date
+      SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
       FROM DIARY d 
       WHERE UserId = ${req.query.userIdent} AND DATE_FORMAT(Date, '%Y-%m') BETWEEN '${req.query.month}' AND '${req.query.month}'
     ;`; 
@@ -115,7 +115,7 @@ router.get('/month', function(req, res, next) {
 router.get('/year', function(req, res, next) {
   try{
     var sql = `
-      SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d') as date
+      SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
       FROM DIARY d 
       WHERE UserId = ${req.query.userIdent} AND DATE_FORMAT(Date, '%Y') BETWEEN '${req.query.year}' AND '${req.query.year}'
     ;`; 
