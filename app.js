@@ -48,7 +48,7 @@ app.use(function(req, res, next) {
  //python----------------------------------
  
  var schedule = require('node-schedule'); // cron style 작업 
- var j = schedule.scheduleJob('10 10 18 * * *', function(){ 
+ /*var j = schedule.scheduleJob('10 00 2 * * *', function(){ 
    console.log('한국기준 매일밤 3시 10분10초에 시행');
    //자식 스레드 생성
    const spawn = require('child_process').spawn;
@@ -65,7 +65,7 @@ app.use(function(req, res, next) {
    result3.stdout.on('data', function(data) { console.log(data.toString()); }); 
    result3.stderr.on('data', function(data) { console.log(data.toString()); });
  });
-
+*/
  var m = schedule.scheduleJob('10 24 19 * * *', function(){ 
   console.log('한국기준 매일 밤 4시 27분 10초에 시행');
   //자식 스레드 생성

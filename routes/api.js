@@ -17,7 +17,7 @@ router.get(`/variety`, function(req, res, next) {
         try{
             let value;
             value = ans
-            res.send(value); //Key 없는 JSON
+            res.send({vlaue:value}); //Key 없는 JSON
         }catch(err){
           res.send(err);
         }
@@ -61,11 +61,11 @@ function getRank()
       case (countnum===1)://작물 1개만 나온경우
         crolResult[0]=cropscode[count[0]];
         crolResult[1]=cropscode[Math.floor(Math.random() * 13)+11];//난수 생성 11~25
-        crolResult[2]=cropscode[Math.floor(Math.random() * 21)+240];//난수 생성 241~261
+        crolResult[2]=cropscode[Math.floor(Math.random() * 21)+26];//난수 생성 26~48
       default://작물 0개인경우
         crolResult[0]=cropscode[Math.floor(Math.random() * 12)];//0~11
-        crolResult[1]=cropscode[Math.floor(Math.random() * 13)+11];//난수 생성 11~25
-        crolResult[2]=cropscode[Math.floor(Math.random() * 21)+240];//난수 생성 241~261
+        crolResult[1]=cropscode[Math.floor(Math.random() * 13)+12];//난수 생성 11~26
+        crolResult[2]=cropscode[Math.floor(Math.random() * 21)+27];//난수 생성 27~49
         break;
   }
   /*for(var o=0;o<3;o++){
