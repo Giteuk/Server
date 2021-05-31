@@ -17,7 +17,7 @@ router.get(`/variety`, function(req, res, next) {
         try{
             let value;
             value = ans
-            res.send({vlaue:value}); //Key 없는 JSON
+            res.send(value); //Key 없는 JSON
         }catch(err){
           res.send(err);
         }
@@ -298,9 +298,11 @@ async function varietyInfo(){
     download= await magazineInfo()//주간 농사정보 다운로드 링크
 
     //Yvideo = await videoInfo(vInfoImage[0]);
-    Yvideo ="zu02vmfoBTg";
+    Yvideo ="034chrvvwvQ";
 
     let resultArray = [vInfoImage[0],vInfoImage_nd[0],vInfoImage_rd[0],vInfoText,vInfoImage[1],vInfoInsect,download,Yvideo]
+
+    console.log(resultArray)
     return resultArray;
 }
 
