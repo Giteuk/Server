@@ -10,6 +10,7 @@ router.route('/')
         SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
         FROM DIARY d 
         WHERE UserId = ${req.query.userIdent} AND Date BETWEEN DATE_FORMAT('${req.query.startDate}', '%Y-%m-%d') AND DATE_FORMAT(DATE_ADD('${req.query.endDate}', INTERVAL +1 DAY),'%Y-%m-%d')
+        ORDER BY date DESC;
       ;`; 
       let conn = mysql.createConnection(db_info);
       conn.connect();
@@ -92,6 +93,7 @@ router.get('/month', function(req, res, next) {
       SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
       FROM DIARY d 
       WHERE UserId = ${req.query.userIdent} AND DATE_FORMAT(Date, '%Y-%m') BETWEEN '${req.query.month}' AND '${req.query.month}'
+      ORDER BY date DESC;
     ;`; 
     let connection = mysql.createConnection(db_info);
     connection.connect();
@@ -118,6 +120,7 @@ router.get('/year', function(req, res, next) {
       SELECT id as diaryId, Content as content, DATE_FORMAT(Date, '%Y-%m-%d %H:%i') as date
       FROM DIARY d 
       WHERE UserId = ${req.query.userIdent} AND DATE_FORMAT(Date, '%Y') BETWEEN '${req.query.year}' AND '${req.query.year}'
+      ORDER BY date DESC;
     ;`; 
     let connection = mysql.createConnection(db_info);
     connection.connect();
